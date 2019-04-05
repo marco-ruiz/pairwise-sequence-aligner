@@ -8,7 +8,7 @@ This project consists of:
 ## Web Service Application
 
 - Spring boot based web service 
-- The requests are submitted using `POST` verb (rather than `GET`) since the parameters are lengthy.
+- The requests are submitted using `POST` verb (rather than `GET`) since the sequences to aligned may be lengthy.
 - By default the web service runs on port `8080`, and the resource URI is `api/align`.
 
 
