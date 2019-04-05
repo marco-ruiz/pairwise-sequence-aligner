@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.bop.seqAlign.framework.AlignmentDescriptor;
 import com.bop.seqAlign.framework.AlignmentMatrix;
-import com.bop.seqAlign.framework.AlignmentTransition;
+import com.bop.seqAlign.framework.Transition;
 
 /**
  * @author Marco Ruiz
@@ -33,21 +33,21 @@ public class GlobalAlignmentMatrix extends AlignmentMatrix {
 		super(descriptor);
 	}
 
-	public AlignmentTransition getInitialTransitionForSequenceA(int index) {
-        return new AlignmentTransition(index - 1, 0, -index * descriptor.getFixGapPenalty());
+	public Transition getInitialTransitionForSequenceA(int index) {
+        return new Transition(index - 1, 0, -index * descriptor.getFixGapPenalty());
     }
 
-	public AlignmentTransition getInitialTransitionForSequenceB(int index) {
-		return new AlignmentTransition(0, index - 1, -index * descriptor.getFixGapPenalty());
+	public Transition getInitialTransitionForSequenceB(int index) {
+		return new Transition(0, index - 1, -index * descriptor.getFixGapPenalty());
 	}
 
-    public List<AlignmentTransition> getTraceBackStarts() {
-        List<AlignmentTransition> result = new ArrayList<>();
-        result.add(new AlignmentTransition(getSequenceA().length() - 1, getSequenceB().length() - 1));
+    public List<Transition> getTraceBackStarts() {
+        List<Transition> result = new ArrayList<>();
+        result.add(new Transition(getSequenceA().length() - 1, getSequenceB().length() - 1));
 		return result;
     }
 
-	public boolean isTraceBackStopCondition(AlignmentTransition target) {
-        return ((target.getIndexA() == 0) && (target.getIndexB() == 0));
+	public boolean isTraceBackStopCondition(Transition target) {
+        return target.getCoords().isOrigin();
 	}
 }

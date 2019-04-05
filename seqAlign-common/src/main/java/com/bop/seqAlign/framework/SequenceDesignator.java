@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.bop.common.utils;
+package com.bop.seqAlign.framework;
 
 /**
  * @author Marco Ruiz
  */
-@FunctionalInterface
-public interface TriConsumer<D1_T, D2_T, D3_T> {
+public enum SequenceDesignator {
 	
-	void accept(D1_T data1, D2_T data2, D3_T data3);
+	SEQUENCE_A, SEQUENCE_B;
 }

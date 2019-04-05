@@ -40,7 +40,11 @@ public class TwoDimensionalMatrixValues<VAL_T> {
     	dimY = dimensionY;
     	values = new Object[dimX][dimY];
     }
-    
+
+	public VAL_T getValue(TwoDimensionalCoordinates coords) {
+		return getValue(coords.getX(), coords.getY());
+	}
+
 	@SuppressWarnings("unchecked")
 	public VAL_T getValue(int x, int y) {
     	checkDimensions(x, y);
@@ -52,10 +56,10 @@ public class TwoDimensionalMatrixValues<VAL_T> {
     	values[x][y] = value;
     }
     
-    public void setValues(BiFunction<Integer, Integer, VAL_T> valueFactory) {
+    public void setValues(BiFunction<Integer, Integer, VAL_T> valueProvider) {
         for (int indexX = 0; indexX < dimX; indexX++)
             for (int indexY = 0; indexY < dimY; indexY++)
-                setValue(indexX, indexY, valueFactory.apply(indexX, indexY));
+                setValue(indexX, indexY, valueProvider.apply(indexX, indexY));
     }
 
     public int getDimensionX() {

@@ -24,11 +24,11 @@ import java.util.List;
  */
 public interface IAlignmentMatrix {
 
-    AlignmentTransition getInitialTransitionForSequenceA(int index);
+    Transition getInitialTransitionForSequenceA(int index);
 
-    AlignmentTransition getInitialTransitionForSequenceB(int index);
+    Transition getInitialTransitionForSequenceB(int index);
 
-    boolean isTraceBackStopCondition(AlignmentTransition target);
+    boolean isTraceBackStopCondition(Transition target);
 
-    List<AlignmentTransition> getTraceBackStarts();
+    List<Transition> getTraceBackStarts();
 }

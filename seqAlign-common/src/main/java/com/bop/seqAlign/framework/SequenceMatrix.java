@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.bop.common.math;
+package com.bop.seqAlign.framework;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import com.bop.common.math.TwoDimensionalMatrixValues;
 
 /**
  * @author Marco Ruiz
@@ -73,8 +75,12 @@ public class SequenceMatrix<VAL_T> extends TwoDimensionalMatrixValues<VAL_T> {
     	return getFirstIndexOfCharacter(sequenceB, symbol);
     }
 	
-	public char getSymbol(boolean firstSequence, int index) {
-		return firstSequence ? getSymbolInSequenceA(index) : getSymbolInSequenceB(index);
+	public char getSymbol(SequenceDesignator designator, int index) {
+		switch (designator) {
+			case SEQUENCE_A: return getSymbolInSequenceA(index);
+			case SEQUENCE_B: return getSymbolInSequenceB(index);
+		}
+		return '?';
 	}
 
 	public char getSymbolInSequenceA(int index) {

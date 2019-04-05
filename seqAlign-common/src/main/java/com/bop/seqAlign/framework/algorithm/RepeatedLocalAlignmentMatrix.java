@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import com.bop.seqAlign.framework.AlignmentDescriptor;
-import com.bop.seqAlign.framework.AlignmentTransition;
+import com.bop.seqAlign.framework.Transition;
 
 /**
  * @author Marco Ruiz
@@ -31,29 +31,29 @@ public class RepeatedLocalAlignmentMatrix extends LocalAlignmentMatrix {
 		super(descriptor);
     }
 
-    public AlignmentTransition getInitialTransitionForSequenceA(int indexA) {
+    public Transition getInitialTransitionForSequenceA(int indexA) {
     	return IntStream.range(0, getSequenceB().length())
     		.mapToObj(indexB -> createInitialTransitionCandidate(indexA - 1, indexB))
-    		.max(AlignmentTransition.SCORE_COMPARATOR)
+    		.max(Transition.SCORE_COMPARATOR)
     		.get();
     }
 
-	private AlignmentTransition createInitialTransitionCandidate(int indexA, int indexB) {
-		return new AlignmentTransition(indexA, indexB, getValue(indexA, indexB).getScore() - traceBackStartsProvider.getCutScore());
+	private Transition createInitialTransitionCandidate(int indexA, int indexB) {
+		return new Transition(indexA, indexB, getValue(indexA, indexB).getScore() - traceBackStartsProvider.getCutScore());
 	}
     
-    public AlignmentTransition getInitialTransitionForSequenceB(int index) {
-    	return new AlignmentTransition();
+    public Transition getInitialTransitionForSequenceB(int index) {
+    	return new Transition();
     }
 
     public boolean isTraceBackStopCondition(int indexA, int indexB) {
-        AlignmentTransition parent = getValue(indexA, indexB);
+        Transition parent = getValue(indexA, indexB);
         return ((parent.getIndexB() == 0) || (getValue(parent.getIndexA(), parent.getIndexB()).getIndexB() == 0));
     }
 
-    protected List<AlignmentTransition> createCandidateTransitions(int indexA, int indexB) {
-    	List<AlignmentTransition> result = super.createCandidateTransitions(indexA, indexB);
-    	result.add(new AlignmentTransition(indexA, 0, getValue(indexA, 0).getScore()));
+    protected List<Transition> createCandidateTransitions(int indexA, int indexB) {
+    	List<Transition> result = super.createCandidateTransitions(indexA, indexB);
+    	result.add(new Transition(indexA, 0, getValue(indexA, 0).getScore()));
     	return result;
     }
 }

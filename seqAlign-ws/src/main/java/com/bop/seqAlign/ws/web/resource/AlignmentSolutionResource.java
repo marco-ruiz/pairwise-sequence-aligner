@@ -17,6 +17,7 @@
 package com.bop.seqAlign.ws.web.resource;
 
 import com.bop.seqAlign.framework.AlignmentSolution;
+import com.bop.seqAlign.framework.SequenceDesignator;
 
 /**
  * @author Marco Ruiz
@@ -32,10 +33,10 @@ public class AlignmentSolutionResource {
 	
 	public AlignmentSolutionResource(AlignmentSolution source) {
 		solution = source;
-		startIndexSequenceA	= source.getAlignedStartIndex(true);
-		endIndexSequenceA	= source.getAlignedEndIndex(true);
-		startIndexSequenceB	= source.getAlignedStartIndex(false);
-		endIndexSequenceB	= source.getAlignedEndIndex(false);
+		startIndexSequenceA	= source.getAlignedStartIndex(SequenceDesignator.SEQUENCE_A);
+		endIndexSequenceA	= source.getAlignedEndIndex(SequenceDesignator.SEQUENCE_A);
+		startIndexSequenceB	= source.getAlignedStartIndex(SequenceDesignator.SEQUENCE_B);
+		endIndexSequenceB	= source.getAlignedEndIndex(SequenceDesignator.SEQUENCE_B);
 	}
 
 	public String getSubSequenceA() {

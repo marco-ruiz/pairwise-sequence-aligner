@@ -7,19 +7,24 @@ This project consists of:
 
 ## Getting Started
 
+### Web Service
+
+To launch the web service issue the following command from the cloned project directory:
+
+```
+	./gradlew run
+```
+
+
 ### Swing application
 
 ![](README/sequence-aligner.gif)
 
-To try out the swing application just issue the following command from the cloned project directory:
-
+To launch the swing application issue the following command from the cloned project directory:
 
 ```
-
 	./gradlew run
-
 ```
-
 
 #### Usage
 

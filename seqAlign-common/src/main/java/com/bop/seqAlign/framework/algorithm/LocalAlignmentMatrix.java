@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.bop.seqAlign.framework.AlignmentDescriptor;
 import com.bop.seqAlign.framework.AlignmentMatrix;
-import com.bop.seqAlign.framework.AlignmentTransition;
+import com.bop.seqAlign.framework.Transition;
 import com.bop.seqAlign.framework.CutScoreTraceBackStartsProvider;
 
 /**
@@ -35,25 +35,25 @@ public class LocalAlignmentMatrix extends AlignmentMatrix {
         traceBackStartsProvider = new CutScoreTraceBackStartsProvider(descriptor.getMinScore(), this);
     }
 
-    public AlignmentTransition getInitialTransitionForSequenceA(int index) {
-        return new AlignmentTransition(index, 0, 0);
+    public Transition getInitialTransitionForSequenceA(int index) {
+        return new Transition(index, 0, 0);
     }
 
-	public AlignmentTransition getInitialTransitionForSequenceB(int index) {
-		return new AlignmentTransition(0, index, 0);
+	public Transition getInitialTransitionForSequenceB(int index) {
+		return new Transition(0, index, 0);
 	}
 
-    public List<AlignmentTransition> getTraceBackStarts() {
+    public List<Transition> getTraceBackStarts() {
     	return traceBackStartsProvider.getTraceBackStarts();
 	}
 
-	public boolean isTraceBackStopCondition(AlignmentTransition target) {
+	public boolean isTraceBackStopCondition(Transition target) {
 		return (getReferencedTransition(target).getScore() == 0);
 	}
 	
-    protected List<AlignmentTransition> createCandidateTransitions(int indexA, int indexB) {
-    	List<AlignmentTransition> result = super.createCandidateTransitions(indexA, indexB);
-    	result.add(new AlignmentTransition(indexA, indexB, 0));
+    protected List<Transition> createCandidateTransitions(int indexA, int indexB) {
+    	List<Transition> result = super.createCandidateTransitions(indexA, indexB);
+    	result.add(new Transition(indexA, indexB, 0));
     	return result;
     }
 }

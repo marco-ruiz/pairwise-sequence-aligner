@@ -53,34 +53,27 @@ public class AlignedSequences {
 	public AlignedSequences(AlignmentSolution solution, boolean format) {
 		this.solution = solution;
 		
-		for (int index = 1; index < solution.getTransitions().size(); index++) 
-			processSymbolAt(index);
+		solution.getTransitionDeltas().stream().forEach(this::processSymbolForDelta);
 		
 		if (format) format();
 		alignedAStr = alignedA.toString();
 		alignedBStr = alignedB.toString();
 		alignmentStr = alignment.toString();
 	}
-
-	private void processSymbolAt(int index) {
-		alignedA.append(solution.getSymbolAt(true, index));
-		alignedB.append(solution.getSymbolAt(false, index));
-		alignment.append(getAlignmentSymbolAt(index));
-	}
-
-	private char getAlignmentSymbolAt(int index) {
-		return (alignedA.charAt(index - 1) == alignedB.charAt(index - 1)) ? 
-			alignedA.charAt(index - 1) :
-			(solution.getReferencedScoreIncrement(index) > 0) ? '+' : ' ';
+	
+	private void processSymbolForDelta(TransitionDelta delta) {
+		alignedA.append(delta.getSymbolA());
+		alignedB.append(delta.getSymbolB());
+		alignment.append(delta.getSymbolAlignment());
 	}
 	
 	private void format() {
-		format(alignedA, AlignmentTransition::getIndexA);
-		format(alignedB, AlignmentTransition::getIndexB);
+		format(alignedA, Transition::getIndexA);
+		format(alignedB, Transition::getIndexB);
 		format(alignment, -1, -1);
 	}
 	
-	private void format(StringBuffer target, Function<AlignmentTransition, Integer> indexProvider) {
+	private void format(StringBuffer target, Function<Transition, Integer> indexProvider) {
 		format(target, indexProvider.apply(solution.getTransitions().get(0)), indexProvider.apply(solution.getLastTransition()));
 	}
 

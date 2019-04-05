@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.bop.common.math.SequenceMatrix;
+import com.bop.common.math.TwoDimensionalCoordinates;
 
 /**
  * @author Marco Ruiz
  */
-public abstract class AlignmentMatrix extends SequenceMatrix<AlignmentTransition> implements IAlignmentMatrix {
+public abstract class AlignmentMatrix extends SequenceMatrix<Transition> implements IAlignmentMatrix {
 
     protected AlignmentDescriptor descriptor;
     protected List<AlignmentSolution> solutions;
@@ -38,10 +38,18 @@ public abstract class AlignmentMatrix extends SequenceMatrix<AlignmentTransition
     	this.descriptor = descriptor;
     }
 
-	public AlignmentTransition getReferencedTransition(AlignmentTransition transition) {
-		return getValue(transition.getIndexA(), transition.getIndexB());
+	public Transition getReferencedTransition(Transition transition) {
+		return getReferencedTransition(transition.getCoords());
 	}
 
+	public Transition getReferencedTransition(TwoDimensionalCoordinates coords) {
+		return getValue(coords);
+	}
+
+	public char getReferencedSymbol(SequenceDesignator designator, Transition transition) {
+		return getSymbol(designator, transition.getIndex(designator));
+	}
+	
     public AlignmentDescriptor getDescriptor() {
     	return descriptor;
     }
@@ -51,38 +59,39 @@ public abstract class AlignmentMatrix extends SequenceMatrix<AlignmentTransition
         solutions = createSolutions();
 	}
 
-	private AlignmentTransition computeInnerAlignmentTransition(int indexA, int indexB) {
-		if (indexA == 0 && indexB == 0) return new AlignmentTransition();
+	private Transition computeInnerAlignmentTransition(int indexA, int indexB) {
+		if (indexA == 0 && indexB == 0) return new Transition();
 		if (indexA == 0) return getInitialTransitionForSequenceB(indexB);
 		if (indexB == 0) return getInitialTransitionForSequenceA(indexA);
 		
-		return Collections.max(createCandidateTransitions(indexA, indexB), AlignmentTransition.SCORE_COMPARATOR);
+		return Collections.max(createCandidateTransitions(indexA, indexB), Transition.SCORE_COMPARATOR);
 	}
 
-    protected List<AlignmentTransition> createCandidateTransitions(int indexA, int indexB) {
-		List<AlignmentTransition> result = new ArrayList<>();
+    protected List<Transition> createCandidateTransitions(int indexA, int indexB) {
+		List<Transition> result = new ArrayList<>();
 		result.add(createCandidateTransition(indexA, indexB - 1, true));
 		result.add(createCandidateTransition(indexA - 1, indexB, true));
 		result.add(createCandidateTransition(indexA - 1, indexB - 1, false));
 		return result;
 	}
     
-    private AlignmentTransition createCandidateTransition(int indexA, int indexB, boolean gapScore) {
-		int candidateScore = gapScore ? -getGapPenalty(indexA, indexB) : descriptor.getPairwiseScoreMatrix().getValue(indexA, indexB);
-		return new AlignmentTransition(indexA, indexB, getValue(indexA, indexB).getScore() + candidateScore);
+    private Transition createCandidateTransition(int indexA, int indexB, boolean gapScore) {
+    	TwoDimensionalCoordinates coords = new TwoDimensionalCoordinates(indexA, indexB);
+		int candidateScore = gapScore ? -getGapPenalty(coords) : descriptor.getPairwiseScoreMatrix().getValue(coords);
+		return new Transition(coords, getValue(coords).getScore() + candidateScore);
     }
 
-	private int getGapPenalty(int indexA, int indexB) {
-		AlignmentTransition parent = ((indexA > 0) || (indexB > 0)) ? getValue(indexA, indexB) : new AlignmentTransition();
-        boolean isParentAGap = ((parent.getIndexA() == indexA) || (parent.getIndexB() == indexB));
+	private int getGapPenalty(TwoDimensionalCoordinates coords) {
+		Transition parent = coords.isInPositiveSpace() ? getValue(coords) : new Transition();
+        boolean isParentAGap = parent.getCoords().equals(coords);
 		return descriptor.getGapPenalty(isParentAGap);
-    }
+	}
     
     //============
     // SOLUTIONS
     //============
     public List<AlignmentSolution> createSolutions() {
-        Map<AlignmentTransition, List<AlignmentSolution>> solutionsByFirstTransition = getTraceBackStarts().stream()
+        Map<Transition, List<AlignmentSolution>> solutionsByFirstTransition = getTraceBackStarts().stream()
 					.map(start -> new AlignmentSolution(this, start))
 //					.collect(Collectors.groupingBy(sol -> sol.getTransitions().get(0).cloneUnscored()));
         			.collect(Collectors.groupingBy(sol -> sol.getTransitions().get(0)));

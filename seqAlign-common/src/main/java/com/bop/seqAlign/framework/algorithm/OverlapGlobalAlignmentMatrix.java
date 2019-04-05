@@ -19,7 +19,7 @@ package com.bop.seqAlign.framework.algorithm;
 import java.util.List;
 
 import com.bop.seqAlign.framework.AlignmentDescriptor;
-import com.bop.seqAlign.framework.AlignmentTransition;
+import com.bop.seqAlign.framework.Transition;
 import com.bop.seqAlign.framework.CutScoreTraceBackStartsProvider;
 
 /**
@@ -38,19 +38,19 @@ public class OverlapGlobalAlignmentMatrix extends GlobalAlignmentMatrix {
         		(indexA, indexB) -> indexA == lastIndexA || indexB == LastIndexB);
     }
 
-    public AlignmentTransition getInitialTransitionForSequenceA(int index) {
-        return new AlignmentTransition(index - 1, 0, 0);
+    public Transition getInitialTransitionForSequenceA(int index) {
+        return new Transition(index - 1, 0, 0);
     }
 
-    public AlignmentTransition getInitialTransitionForSequenceB(int index) {
-        return new AlignmentTransition(0, index - 1, 0);
+    public Transition getInitialTransitionForSequenceB(int index) {
+        return new Transition(0, index - 1, 0);
     }
 
-    public List<AlignmentTransition> getTraceBackStarts() {
+    public List<Transition> getTraceBackStarts() {
     	return traceBackStartsProvider.getTraceBackStarts();
 	}
 
-    public boolean isTraceBackStopCondition(AlignmentTransition target) {
+    public boolean isTraceBackStopCondition(Transition target) {
         return ((target.getIndexA() == 0) || (target.getIndexB() == 0));
     }
 }

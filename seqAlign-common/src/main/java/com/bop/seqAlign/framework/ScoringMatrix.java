@@ -20,8 +20,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Generated;
 
-import com.bop.common.math.SequenceMatrix;
-
 @Generated(value = "com.bop.seqAlign.framework.scoring.MatrixesGenerator")
 public enum ScoringMatrix {
 

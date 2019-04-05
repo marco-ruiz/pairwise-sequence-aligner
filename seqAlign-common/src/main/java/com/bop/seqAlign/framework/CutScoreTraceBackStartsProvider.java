@@ -19,10 +19,11 @@ package com.bop.seqAlign.framework;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-import com.bop.common.utils.TriConsumer;
+import com.bop.common.math.TwoDimensionalCoordinates;
 
 /**
  * @author Marco Ruiz
@@ -47,35 +48,35 @@ public class CutScoreTraceBackStartsProvider {
 		return cutScore;
 	}
 
-	public List<AlignmentTransition> getTraceBackStarts() {
-		TriConsumer<Integer, Integer, List<AlignmentTransition>> accumulator = (cutScore < 1) ? this::accumMax : this::accumByCutScore;
+	public List<Transition> getTraceBackStarts() {
+		BiConsumer<TwoDimensionalCoordinates, List<Transition>> accumulator = (cutScore < 1) ? this::accumMax : this::accumByCutScore;
         int lenA = source.getSequenceA().length();
         int lenB = source.getSequenceB().length();
 
-        List<AlignmentTransition> result = new ArrayList<>();
+        List<Transition> result = new ArrayList<>();
 		for (int indexA = 1; indexA < lenA; indexA++)
 		    for (int indexB = 1; indexB < lenB; indexB++)
 		    	if (coordTester.test(indexA, indexB))
-		    		accumulator.accept(indexA, indexB, result);
+		    		accumulator.accept(new TwoDimensionalCoordinates(indexA, indexB), result);
 		
-        Collections.sort(result, AlignmentTransition.SCORE_COMPARATOR);
+        Collections.sort(result, Transition.SCORE_COMPARATOR);
 		return result;
 	}
 
-	private void accumByCutScore(int indexA, int indexB, List<AlignmentTransition> result) {
-		accumulateTransition(indexA, indexB, cutScore, t -> result.add(t));
+	private void accumByCutScore(TwoDimensionalCoordinates coords, List<Transition> result) {
+		accumulateTransition(coords, cutScore, t -> result.add(t));
 	}
 
-	private void accumMax(int indexA, int indexB, List<AlignmentTransition> result) {
+	private void accumMax(TwoDimensionalCoordinates coords, List<Transition> result) {
 		if (result.size() == 0) 
-			result.add(new AlignmentTransition());
+			result.add(new Transition());
 		
-		accumulateTransition(indexA, indexB, result.get(0).getScore(), t -> result.set(0, t));
+		accumulateTransition(coords, result.get(0).getScore(), t -> result.set(0, t));
 	}
 
-	private void accumulateTransition(int indexA, int indexB, int cutScore, Consumer<AlignmentTransition> accumulator) {
-		AlignmentTransition coords = new AlignmentTransition(indexA, indexB, source.getValue(indexA, indexB).getScore());
-		if (coords.getScore() > cutScore)
-			accumulator.accept(coords);
+	private void accumulateTransition(TwoDimensionalCoordinates coords, int cutScore, Consumer<Transition> accumulator) {
+		Transition transition = new Transition(coords, source.getReferencedTransition(coords).getScore());
+		if (transition.getScore() > cutScore)
+			accumulator.accept(transition);
 	}
 }
