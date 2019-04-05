@@ -1,34 +1,55 @@
-# Pairwise Sequence Aligner Application
+# Pairwise Sequence Aligner
 
 This project consists of:
 - An abstract framework to compute sequence alignments.
 - An implementation of the pairwise alignment algorithms for local, global, repeated and overlap global, plugged into the framework.
-- An end user Java Swing application using this framework to align sequences.
+- A series of front end applications which (leveraging on the framework) allow end users to align sequences.
 
-## Getting Started
+## Web Service Application
 
-### Web Service
+- Spring boot based web service 
+- The requests are submitted using `POST` verb (rather than `GET`) since the parameters are lengthy.
+- By default the web service runs on port `8080`, and the resource URI is `api/align`.
 
-To launch the web service issue the following command from the cloned project directory:
-
-```
-	./gradlew run
-```
-
-
-### Swing application
-
-![](README/sequence-aligner.gif)
-
-To launch the swing application issue the following command from the cloned project directory:
-
-```
-	./gradlew run
-```
 
 #### Usage
 
-- Initially it gives you an interface where to input the parameters for the alignment to compute:
+- Launch the web service by issuing the following command from the cloned project directory:
+
+```
+./gradlew bootRun
+```
+
+- Submit a web request to the running web service (by default `http://localhost:8080/api/align`) such as the following:
+
+```
+curl 'http://localhost:8080/api/align' -i -X POST -H 'Content-Type: application/json' -d \
+'{
+  "sequenceA" : "TNAKTAKVCQSFAWNEENTQKAVSMYQQLINENGLDFANSDGLKEIAKAVGAASPVSVRSKLTS",
+  "sequenceB" : "STVSPVFVCQSFAKNAGMYGERVGAVGAASPVSCFHLALTKQAQNKTIKPAVTSQLAKIIRSEVSNPPA",
+  "scoringMatrixName" : "BLOSUM62",
+  "alignmentType": "LOCAL",
+  "maxNumberOfSolutions" : 50,
+  "fixGapPenalty" : 12,
+  "varGapPenalty" : 2,
+  "minScore" : 10
+}'
+```
+
+## Swing Application
+
+![](README/sequence-aligner.gif)
+
+
+#### Usage
+
+- Launch the swing application by issuing the following command from the cloned project directory:
+
+```
+./gradlew run
+```
+
+- The initial interface provides you with inputs to specify the parameters for the alignment to compute:
 
     1. `Sequence A` and `Sequence B` to be aligned. The application comes preset with a couple of example sequences in
 these fields (for demo purposes).
