@@ -1,0 +1,5 @@
+rootProject.name = 'seqAlign'
+
+include 'seqAlign-common'
+include 'seqAlign-ws'
+include 'seqAlign-swing'

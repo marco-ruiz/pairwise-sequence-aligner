@@ -1,0 +1,30 @@
+allprojects {
+	buildscript {
+		repositories {
+			jcenter()
+			mavenLocal()
+			mavenCentral()
+			maven { url 'https://repo.spring.io/libs-snapshot' }
+			maven { url 'https://repository.jboss.org/nexus/content/repositories/releases' }
+		}
+	}
+	
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	
+	repositories {
+		jcenter()
+		mavenLocal()
+		mavenCentral()
+		maven { url 'https://repo.spring.io/libs-snapshot' }
+		maven { url 'https://repository.jboss.org/nexus/content/repositories/releases' }
+    }
+	
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	eclipse.classpath.downloadJavadoc = true
+}
+
+subprojects {
+	version = '1.0'
+}

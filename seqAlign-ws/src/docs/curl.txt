@@ -1,0 +1,11 @@
+curl 'http://localhost:8080/api/align' -i -X POST -H 'Content-Type: application/json' -d \
+'{
+  "sequenceA" : "TNAKTAKVCQSFAWNEENTQKAVSMYQQLINENGLDFANSDGLKEIAKAVGAASPVSVRSKLTS",
+  "sequenceB" : "STVSPVFVCQSFAKNAGMYGERVGAVGAASPVSCFHLALTKQAQNKTIKPAVTSQLAKIIRSEVSNPPA",
+  "scoringMatrixName" : "BLOSUM62",
+  "alignmentType": "LOCAL",
+  "maxNumberOfSolutions" : 50,
+  "fixGapPenalty" : 12,
+  "varGapPenalty" : 2,
+  "minScore" : 10
+}'

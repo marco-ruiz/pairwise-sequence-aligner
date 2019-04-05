@@ -1,0 +1,8 @@
+apply plugin:'application'
+
+mainClassName = "com.bop.seqAlign.swing.SequenceAligner"
+
+dependencies {
+	compile project(':seqAlign-common')
+	testCompile 'junit:junit'
+}

@@ -1,0 +1,10 @@
+dependencies {
+	testCompile 'junit:junit'
+}
+/*
+task runApp(dependsOn: 'classes', type: JavaExec) {
+	group = 'Execution'
+	description = 'Launches the default application associated with this project'
+    classpath = sourceSets.main.runtimeClasspath
+}
+*/
