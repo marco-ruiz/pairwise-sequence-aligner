@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.bop.seqAlign.swing.results;
+package com.bop.seqAlign.swing;
 
 import java.awt.Color;
 import java.awt.Point;
 
-import com.bop.common.swing.SectionPanel;
 import com.bop.common.swing.Segment;
 import com.bop.common.swing.SegmentsDrawerPanel;
 import com.bop.seqAlign.framework.AlignmentMatrix;
+import com.bop.seqAlign.framework.AlignmentSolution;
 import com.bop.seqAlign.framework.TransitionDelta;
 
 /**
@@ -35,23 +35,19 @@ public class AlignmentDrawerPanel extends SegmentsDrawerPanel<TransitionDelta> {
 		Color color = (delta.getReferencedScoreDifference() > 0) ? Color.black : Color.white;
 		Point start = new Point(delta.getPrevious().getCoords().getX(), delta.getPrevious().getCoords().getY());
 		Point end = new Point(delta.getCurrent().getCoords().getX(), delta.getCurrent().getCoords().getY());
-		return new Segment(color, start, end);
+		return new Segment(start, end, color);
 	}
-	
-	private AlignmentMatrix matrix;
 	
 	public AlignmentDrawerPanel() {
 		super(AlignmentDrawerPanel::createSegment);
-		SectionPanel.applySectionPanelLayout(this, "Alignment Plot", null);
 	}
 	
 	public void setAlignmentMatrix(AlignmentMatrix matrix) {
 		if (matrix == null) return;
-		this.matrix = matrix;
 		setMaxSegmentableValues(matrix.getSequenceA().length(), matrix.getSequenceB().length());
 	}
 
-    public void highlightSolution(int solNumber) {
-    	paintSegmentables(matrix.getSolutions().get(solNumber).getTransitionDeltas());
+    public void drawSolution(AlignmentSolution solution) {
+		paintSegmentables(solution.getTransitionDeltas());
     }
 }

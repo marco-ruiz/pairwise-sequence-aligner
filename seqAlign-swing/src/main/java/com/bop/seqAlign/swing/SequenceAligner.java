@@ -27,11 +27,8 @@ import java.util.concurrent.Executors;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 
 import com.bop.seqAlign.framework.AlignmentMatrix;
-import com.bop.seqAlign.swing.results.AlignmentResultsPanel;
-import com.bop.seqAlign.swing.results.AlignmentDrawerPanel;
 
 /**
  * @author Marco Ruiz
@@ -42,15 +39,13 @@ public class SequenceAligner extends JPanel {
 	private static final ExecutorService executor = Executors.newFixedThreadPool(1);
 	
     private JFrame appFrame;
-    private StartUpPanel startup = new StartUpPanel(this::runAlignment);
+    private InputParametersPanel startup = new InputParametersPanel(this::runAlignment);
 
-    private AlignmentDrawerPanel display = new AlignmentDrawerPanel();
-    private AlignmentResultsPanel resultsPane;
-    private JPanel ultimateResultPane;
+    private AlignmentResultsPanel resultsPane = new AlignmentResultsPanel(this::restart);
 
     public SequenceAligner() {
-        buildFrame();
-        buildGUI();
+    	setLayout(new BorderLayout());
+    	buildFrame();
         restart();
     }
 
@@ -69,20 +64,6 @@ public class SequenceAligner extends JPanel {
         });
     }
 
-    private void buildGUI() {
-        ultimateResultPane = new JPanel();
-        setLayout(new BorderLayout());
-
-        // Create the table panel
-        resultsPane = new AlignmentResultsPanel(display::highlightSolution, this::restart);
-
-        // Create the whole panel
-        ultimateResultPane.setLayout(new BorderLayout());
-        ultimateResultPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        ultimateResultPane.add(display, BorderLayout.CENTER);
-        ultimateResultPane.add(resultsPane, BorderLayout.SOUTH);
-    }
-
     public void restart(){
     	switchUserInterface(true);
         validate();
@@ -97,7 +78,7 @@ public class SequenceAligner extends JPanel {
     }
 
 	private Component getUserInterface(boolean definition) {
-		return definition ? startup : ultimateResultPane;
+		return definition ? startup : resultsPane;
 	}
 
     public void runAlignment() {
@@ -105,16 +86,13 @@ public class SequenceAligner extends JPanel {
     }
 
     public void runAlignmentSync() {
-    	updateAlignment(null);
         switchUserInterface(false);
-        resultsPane.rebuild();
 		try {
 			updateAlignment(startup.getAlignmentDescriptor().createAlignment());
 		} catch (IOException e) {}
     }
 
 	private void updateAlignment(AlignmentMatrix alignment) {
-		display.setAlignmentMatrix(alignment);
 		resultsPane.setAlignmentMatrix(alignment);
 	}
 

@@ -42,20 +42,20 @@ import com.bop.seqAlign.framework.ScoringMatrix;
  * @author Marco Ruiz
  */
 @SuppressWarnings("serial")
-public class StartUpPanel extends JPanel {
+public class InputParametersPanel extends JPanel {
 	
 	private TextArea  txtSeqA = new TextArea(">sp|P23541|VA2_BPT5 A2 protein - Bacteriophage T5.\nTNAKTAKVCQSFAWNEENTQKAVSMYQQLINENGLDFANSDGLKEIAKAVGAASPVSVRSKLTS" , 7, 20);
 	private TextArea  txtSeqB = new TextArea(">sp|MISSING\nSTVSPVFVCQSFAKNAGMYGERVGAVGAASPVSCFHLALTKQAQNKTIKPAVTSQLAKIIRSEVSNPPA", 7, 20);
 	
-	private JComboBox<String> matrix 		= new JComboBox<>(new String[]{"BLOSUM50", "BLOSUM62", "PAM250"});
+	private JComboBox<ScoringMatrix> matrix = new JComboBox<>(ScoringMatrix.values());
 	private JComboBox<String> alignmentType = new JComboBox<>(AlignmentType.getNames());
 	
-	private JTextField txtGapOpen  = new JTextField("12");
-	private JTextField txtGapExt   = new JTextField("2");
-	private JTextField txtMinScore = new JTextField("10");
-	private JTextField txtMaxSol   = new JTextField("50");
+	private JTextField txtGapOpen  = new JTextField("5");
+	private JTextField txtGapExt   = new JTextField("1");
+	private JTextField txtMinScore = new JTextField("20");
+	private JTextField txtMaxSol   = new JTextField("15");
 
-    public StartUpPanel(Runnable alignmentRunner) {
+    public InputParametersPanel(Runnable alignmentRunner) {
         setLayout(new BorderLayout());
 
         JPanel center = new JPanel(new BorderLayout());
@@ -105,7 +105,7 @@ public class StartUpPanel extends JPanel {
 
 	public AlignmentDescriptor getAlignmentDescriptor() throws IOException {
         return new AlignmentDescriptor.Builder(readSequence(txtSeqA), readSequence(txtSeqB))
-												.withScoringMatrix(ScoringMatrix.valueOf((String)matrix.getSelectedItem()))
+												.withScoringMatrix((ScoringMatrix)matrix.getSelectedItem())
 												.withMaxNumberOfSolutions(getInteger(txtMaxSol))
 												.withFixGapPenalty(getInteger(txtGapOpen))
 												.withVariableGapPenalty(getInteger(txtGapExt))

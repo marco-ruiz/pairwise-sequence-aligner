@@ -24,21 +24,25 @@ import java.awt.Point;
  */
 public class Segment {
 	
-    public static int getFactored(double orig, double ratio) {
-        return new Double(orig * ratio + 0.5).intValue();
+    public static int getFactored(int orig, double ratio) {
+        return (int) Math.round(orig * ratio);
     }
 
 	private final Color color;
 	private final Point start;
 	private final Point end;
 	
-	private double xRatio;
-	private double yRatio;
+	private Point scaledStart;
+	private Point scaledEnd;
 	
-	public Segment(Color color, Point start, Point end) {
-		this.color = color;
+	public Segment(Point start, Point end) {
+		this(start, end, null);
+	}
+
+	public Segment(Point start, Point end, Color color) {
 		this.start = start;
 		this.end = end;
+		this.color = (color == null) ? Color.BLACK : color;
 		resetRatios();
 	}
 
@@ -47,9 +51,13 @@ public class Segment {
 	}
 	
 	public Segment withRatios(double xRatio, double yRatio) {
-		this.xRatio = xRatio;
-		this.yRatio = yRatio;
+		scaledStart = new Point(getFactored(start.x, xRatio), getFactored(start.y, yRatio));
+		scaledEnd = new Point(getFactored(end.x, xRatio), getFactored(end.y, yRatio));
 		return this;
+	}
+	
+	public Point getDifference() {
+		return new Point(getEndX() - getStartX(), getEndY() - getStartY());
 	}
 	
 	public Color getColor() {
@@ -57,18 +65,26 @@ public class Segment {
 	}
 
 	public int getStartX() {
-		return getFactored(start.x, xRatio);
+		return scaledStart.x;
 	}
 
 	public int getStartY() {
-		return getFactored(start.y, yRatio);
+		return scaledStart.y;
 	}
 
 	public int getEndX() {
-		return getFactored(end.x, xRatio);
+		return scaledEnd.x;
 	}
 
 	public int getEndY() {
-		return getFactored(end.y, yRatio);
+		return scaledEnd.y;
+	}
+
+	public Point getStart() {
+		return scaledEnd;
+	}
+
+	public Point getEnd() {
+		return scaledEnd;
 	}
 }
