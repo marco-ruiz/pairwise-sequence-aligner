@@ -16,6 +16,8 @@
 
 package com.bop.common.swing;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
@@ -38,11 +40,17 @@ public class SectionPanel extends JPanel {
         target.setBorder(new CompoundBorder(borderTitle, borderEmpty));
 	}
 	
-	public SectionPanel(String title) {
-		this(title, null);
+    public SectionPanel(String title) {
+    	applySectionPanelLayout(this, title, null);
 	}
 
     public SectionPanel(String title, LayoutManager layout) {
     	applySectionPanelLayout(this, title, layout);
+    }
+    
+    public SectionPanel(String title, Component child) {
+    	applySectionPanelLayout(this, title, new BorderLayout());
+    	if (child != null)
+    		add(child, BorderLayout.CENTER);
     }
 }

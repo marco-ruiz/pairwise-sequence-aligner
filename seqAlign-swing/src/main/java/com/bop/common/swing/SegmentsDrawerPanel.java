@@ -18,6 +18,7 @@ package com.bop.common.swing;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.List;
 import java.util.function.Function;
 
@@ -72,13 +73,10 @@ public class SegmentsDrawerPanel<SEGMENTABLE_T> extends JPanel {
     
 	private void paintEncapsulatingArea(Graphics g, double xRatio, double yRatio) {
 		Segment firstSegment = getScaledSegment(segments.get(0), xRatio, yRatio);
-		Segment lastSegment = getScaledSegment(segments.get(segments.size() - 1), xRatio, yRatio);
+        Point difference = getScaledDifference(segments.get(0), segments.get(segments.size() - 1), xRatio, yRatio);
 		
         g.setColor(Color.gray);
-        g.fillRect(	firstSegment.getStartX(), 
-	        		firstSegment.getStartY(), 
-					lastSegment.getEndX() - firstSegment.getStartX(), 
-					lastSegment.getEndY() - firstSegment.getStartY());
+        g.fillRect(firstSegment.getStartX(), firstSegment.getStartY(), difference.x, difference.y);
 	}
 	
 	private void drawSegment(Graphics g, SEGMENTABLE_T segmentable, double xRatio, double yRatio) {
@@ -88,7 +86,15 @@ public class SegmentsDrawerPanel<SEGMENTABLE_T> extends JPanel {
 	}
 
 	private Segment getScaledSegment(SEGMENTABLE_T target, double xRatio, double yRatio) {
-		return segmentMapper.apply(target).withRatios(xRatio, yRatio);
+		return getSegment(target).withRatios(xRatio, yRatio);
+	}
+
+	private Point getScaledDifference(SEGMENTABLE_T start, SEGMENTABLE_T end, double xRatio, double yRatio) {
+		return new Segment(getSegment(start).getStart(), getSegment(end).getEnd()).withRatios(xRatio, yRatio).getDifference();
+	}
+	
+	private Segment getSegment(SEGMENTABLE_T target) {
+		return segmentMapper.apply(target);
 	}
 }
 
