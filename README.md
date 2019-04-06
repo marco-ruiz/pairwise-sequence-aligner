@@ -7,10 +7,9 @@ This project consists of:
 
 ## Web Service Application
 
-- Spring boot based web service 
+- Spring boot based REST web service.
 - The requests are submitted using `POST` verb (rather than `GET`) since the sequences to aligned may be lengthy.
 - By default the web service runs on port `8080`, and the resource URI is `api/align`.
-
 
 #### Usage
 
@@ -20,7 +19,22 @@ This project consists of:
 ./gradlew bootRun
 ```
 
-- Submit a web request to the running web service (by default `http://localhost:8080/api/align`) such as the following:
+- Submit a `POST` web request to the running web service (by default `http://localhost:8080/api/align`) with a payload such as the following:
+
+```
+{
+  "sequenceA" : "TNAKTAKVCQSFAWNEENTQKAVSMYQQLINENGLDFANSDGLKEIAKAVGAASPVSVRSKLTS",
+  "sequenceB" : "STVSPVFVCQSFAKNAGMYGERVGAVGAASPVSCFHLALTKQAQNKTIKPAVTSQLAKIIRSEVSNPPA",
+  "scoringMatrixName" : "BLOSUM62",
+  "alignmentType": "LOCAL",
+  "maxNumberOfSolutions" : 50,
+  "fixGapPenalty" : 12,
+  "varGapPenalty" : 2,
+  "minScore" : 10
+}
+```
+
+- From the command line you could issue a curl command like the following:
 
 ```
 curl 'http://localhost:8080/api/align' -i -X POST -H 'Content-Type: application/json' -d \

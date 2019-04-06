@@ -62,7 +62,7 @@ public class TransitionDelta {
 	}
 	
 	public boolean isCurrentSameAsPrevious(SequenceDesignator designator) {
-		return previous.getIndex(designator) == current.getIndex(designator) + 1;
+		return current.getIndex(designator) == previous.getIndex(designator) + 1;
 	}
 
 	public char getSymbol(SequenceDesignator designator) {

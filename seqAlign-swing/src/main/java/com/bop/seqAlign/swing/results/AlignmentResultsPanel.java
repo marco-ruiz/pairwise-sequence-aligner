@@ -37,7 +37,7 @@ import com.bop.seqAlign.framework.AlignmentSolution;
  * @author Marco Ruiz
  */
 @SuppressWarnings("serial")
-public class SequenceAlignmentPane extends JPanel {
+public class AlignmentResultsPanel extends JPanel {
 
     private AlignmentMatrix alignment;
     private JLabel seqDisplayCount, seqDisplayA, seqDisplayX, seqDisplayB;
@@ -46,13 +46,13 @@ public class SequenceAlignmentPane extends JPanel {
     private JButton goBack = new JButton("Back");
 	private Consumer<Integer> dotterRefresher;
 
-    public SequenceAlignmentPane(Consumer<Integer> dotterRefresher, Runnable restarter) {
+    public AlignmentResultsPanel(Consumer<Integer> dotterRefresher, Runnable restarter) {
         this.dotterRefresher = dotterRefresher;
         goBack.addActionListener(e -> restarter.run());
         solutionChoice.addActionListener(e -> displaySolution(solutionChoice.getSelectedIndex()));
         rebuild();
     }
-
+    
     public void rebuild() {
         this.removeAll();
 

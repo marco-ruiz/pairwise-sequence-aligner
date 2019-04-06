@@ -46,7 +46,7 @@ public class AlignmentSolution {
         
         wholeDelta = new TransitionDelta(matrix, getTransition(0), getLastTransition());
 		for (int index = 1; index < getTransitions().size(); index++)
-			transitionDeltas.add(new TransitionDelta(matrix, getTransition(index), getTransition(index - 1)));
+			transitionDeltas.add(new TransitionDelta(matrix, getTransition(index - 1), getTransition(index)));
 
         // Stats
 		alignedSequences = new AlignedSequences(this);

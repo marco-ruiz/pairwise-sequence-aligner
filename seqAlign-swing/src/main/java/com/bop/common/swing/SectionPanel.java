@@ -29,11 +29,20 @@ import javax.swing.border.TitledBorder;
 @SuppressWarnings("serial")
 public class SectionPanel extends JPanel {
 
-    public SectionPanel(String title, LayoutManager layout) {
-        setLayout(layout);
+	public static void applySectionPanelLayout(JPanel target, String title, LayoutManager layout) {
+		if (layout != null)
+			target.setLayout(layout);
 
         TitledBorder borderTitle = new TitledBorder(title);
         EmptyBorder borderEmpty = new EmptyBorder(0, 5, 0, 5);
-        setBorder(new CompoundBorder(borderTitle, borderEmpty));
+        target.setBorder(new CompoundBorder(borderTitle, borderEmpty));
+	}
+	
+	public SectionPanel(String title) {
+		this(title, null);
+	}
+
+    public SectionPanel(String title, LayoutManager layout) {
+    	applySectionPanelLayout(this, title, layout);
     }
 }

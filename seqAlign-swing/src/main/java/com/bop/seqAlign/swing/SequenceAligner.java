@@ -28,11 +28,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import com.bop.seqAlign.framework.AlignmentMatrix;
-import com.bop.seqAlign.swing.results.DotterPane;
-import com.bop.seqAlign.swing.results.SequenceAlignmentPane;
+import com.bop.seqAlign.swing.results.AlignmentResultsPanel;
+import com.bop.seqAlign.swing.results.AlignmentDrawerPanel;
 
 /**
  * @author Marco Ruiz
@@ -45,8 +44,8 @@ public class SequenceAligner extends JPanel {
     private JFrame appFrame;
     private StartUpPanel startup = new StartUpPanel(this::runAlignment);
 
-    private DotterPane display;
-    private SequenceAlignmentPane resultsPane;
+    private AlignmentDrawerPanel display = new AlignmentDrawerPanel();
+    private AlignmentResultsPanel resultsPane;
     private JPanel ultimateResultPane;
 
     public SequenceAligner() {
@@ -72,20 +71,15 @@ public class SequenceAligner extends JPanel {
 
     private void buildGUI() {
         ultimateResultPane = new JPanel();
-        String tableTitle = "Alignment Plot";
         setLayout(new BorderLayout());
 
         // Create the table panel
-        JPanel tablePane = new JPanel(new BorderLayout());
-        tablePane.setBorder(new TitledBorder(tableTitle));
-        display = new DotterPane();
-        tablePane.add(display, BorderLayout.CENTER);
-        resultsPane = new SequenceAlignmentPane(display::highlightSolution, this::restart);
+        resultsPane = new AlignmentResultsPanel(display::highlightSolution, this::restart);
 
         // Create the whole panel
         ultimateResultPane.setLayout(new BorderLayout());
         ultimateResultPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        ultimateResultPane.add(tablePane, BorderLayout.CENTER);
+        ultimateResultPane.add(display, BorderLayout.CENTER);
         ultimateResultPane.add(resultsPane, BorderLayout.SOUTH);
     }
 
