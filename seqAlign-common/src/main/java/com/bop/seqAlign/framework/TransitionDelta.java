@@ -53,6 +53,10 @@ public class TransitionDelta {
 		return source.getReferencedTransition(transition).getScore();
 	}
 
+	public int getScore() {
+		return getReferencedScore(current);
+	}
+
 	private char getScoreDifferenceSymbol() {
 		return referencedScoreDifference > 0 ? AlignmentSolution.POSITIVE_SYMBOL : AlignmentSolution.NEGATIVE_SYMBOL;
 	}

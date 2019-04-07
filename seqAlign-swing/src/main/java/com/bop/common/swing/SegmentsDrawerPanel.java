@@ -18,7 +18,6 @@ package com.bop.common.swing;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.util.List;
 import java.util.function.Function;
 
@@ -38,12 +37,22 @@ public class SegmentsDrawerPanel<SEGMENTABLE_T> extends JPanel {
 
     private int maxX, maxY;
 	private List<SEGMENTABLE_T> segments;
+	private Color backgroundHighlightColor = null;
 
 	public SegmentsDrawerPanel(Function<SEGMENTABLE_T, Segment> segmentMapper) {
-		this.segmentMapper = segmentMapper;
+		this(segmentMapper, null);
 	}
 	
-    public void paintSegmentables(List<SEGMENTABLE_T> segmentables, int maxX, int maxY) {
+	public SegmentsDrawerPanel(Function<SEGMENTABLE_T, Segment> segmentMapper, Color backgroundHighlight) {
+		this.segmentMapper = segmentMapper;
+		setBackgroundHighlightColor(backgroundHighlight);
+	}
+
+    public void setBackgroundHighlightColor(Color highlight) {
+		this.backgroundHighlightColor = highlight;
+	}
+
+	public void paintSegmentables(List<SEGMENTABLE_T> segmentables, int maxX, int maxY) {
     	segments = null;
     	setMaxSegmentableValues(maxX, maxY);
     	paintSegmentables(segmentables);
@@ -72,11 +81,16 @@ public class SegmentsDrawerPanel<SEGMENTABLE_T> extends JPanel {
     }
     
 	private void paintEncapsulatingArea(Graphics g, double xRatio, double yRatio) {
-		Segment firstSegment = getScaledSegment(segments.get(0), xRatio, yRatio);
-        Point difference = getScaledDifference(segments.get(0), segments.get(segments.size() - 1), xRatio, yRatio);
+		if (backgroundHighlightColor == null) return;
+
+		Segment firstTrace = getScaledSegment(segments.get(0), xRatio, yRatio);
+		Segment lastTrace = getScaledSegment(segments.get(segments.size() - 1), xRatio, yRatio);
 		
-        g.setColor(Color.gray);
-        g.fillRect(firstSegment.getStartX(), firstSegment.getStartY(), difference.x, difference.y);
+        g.setColor(backgroundHighlightColor);
+        g.fillRect(	firstTrace.getStartX(), 
+	        		firstTrace.getStartY(), 
+					lastTrace.getEndX() - firstTrace.getStartX() + 1, 
+					lastTrace.getEndY() - firstTrace.getStartY() + 1);
 	}
 	
 	private void drawSegment(Graphics g, SEGMENTABLE_T segmentable, double xRatio, double yRatio) {
@@ -86,15 +100,7 @@ public class SegmentsDrawerPanel<SEGMENTABLE_T> extends JPanel {
 	}
 
 	private Segment getScaledSegment(SEGMENTABLE_T target, double xRatio, double yRatio) {
-		return getSegment(target).withRatios(xRatio, yRatio);
-	}
-
-	private Point getScaledDifference(SEGMENTABLE_T start, SEGMENTABLE_T end, double xRatio, double yRatio) {
-		return new Segment(getSegment(start).getStart(), getSegment(end).getEnd()).withRatios(xRatio, yRatio).getDifference();
-	}
-	
-	private Segment getSegment(SEGMENTABLE_T target) {
-		return segmentMapper.apply(target);
+		return segmentMapper.apply(target).withRatios(xRatio, yRatio);
 	}
 }
 

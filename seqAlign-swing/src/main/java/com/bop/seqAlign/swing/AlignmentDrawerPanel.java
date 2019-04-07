@@ -39,7 +39,7 @@ public class AlignmentDrawerPanel extends SegmentsDrawerPanel<TransitionDelta> {
 	}
 	
 	public AlignmentDrawerPanel() {
-		super(AlignmentDrawerPanel::createSegment);
+		super(AlignmentDrawerPanel::createSegment, Color.gray);
 	}
 	
 	public void setAlignmentMatrix(AlignmentMatrix matrix) {

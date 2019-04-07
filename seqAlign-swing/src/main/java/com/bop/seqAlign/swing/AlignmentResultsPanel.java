@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,7 +38,8 @@ public class AlignmentResultsPanel extends JPanel {
 
     private AlignmentMatrix alignment;
     private JComboBox<String> solutionChoice = new JComboBox<>();
-    private JLabel identities = new JLabel();
+    private JCheckBox colorCheck = new JCheckBox("Color", true);
+    private JLabel statisticsLabel = new JLabel();
     private JButton goBack = new JButton("Back");
 
     private AlignmentDrawerPanel drawerPanel = new AlignmentDrawerPanel();
@@ -49,7 +51,8 @@ public class AlignmentResultsPanel extends JPanel {
         
         goBack.addActionListener(e -> restarter.run());
         solutionChoice.addActionListener(e -> displaySolution(solutionChoice.getSelectedIndex()));
-
+        colorCheck.addActionListener(e -> sequencesPanel.applyColoring(colorCheck.isSelected()));
+        
         add(new SectionPanel("Alignment Plot", drawerPanel), BorderLayout.CENTER);
     	add(createStatsPanel(), BorderLayout.SOUTH);
     }
@@ -66,9 +69,16 @@ public class AlignmentResultsPanel extends JPanel {
     private JPanel createSummaryPanel() {
         JPanel result = new JPanel(new BorderLayout());
         result.add(new JLabel("   Alignment Number: "), BorderLayout.WEST);
-        result.add(solutionChoice, BorderLayout.CENTER);
+        result.add(createControlPanel(), BorderLayout.CENTER);
         result.add(goBack, BorderLayout.EAST);
-        result.add(identities, BorderLayout.SOUTH);
+        result.add(statisticsLabel, BorderLayout.SOUTH);
+        return result;
+    }
+    
+    private JPanel createControlPanel() {
+        JPanel result = new JPanel(new BorderLayout());
+        result.add(solutionChoice, BorderLayout.CENTER);
+        result.add(colorCheck, BorderLayout.EAST);
         return result;
     }
 
@@ -85,10 +95,10 @@ public class AlignmentResultsPanel extends JPanel {
     public void displaySolution(int solutionIndex) {
     	if (solutionIndex < 0 || solutionIndex > alignment.getSolutions().size() - 1) return;
     	AlignmentSolution solution = alignment.getSolutions().get(solutionIndex);
-        
-    	identities.setText(getStatsLabel(solution));
-    	sequencesPanel.displayAlignedSequences(solution.getAlignedSequences());
+
     	drawerPanel.drawSolution(solution);
+    	statisticsLabel.setText(getStatsLabel(solution));
+    	sequencesPanel.displayAlignedSequences(solution.getAlignedSequences());
     }
 
 	private String getStatsLabel(AlignmentSolution solution) {

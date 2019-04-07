@@ -16,6 +16,9 @@
 
 package com.bop.seqAlign.ws.web.resource;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.bop.seqAlign.framework.AlignmentSolution;
 import com.bop.seqAlign.framework.SequenceDesignator;
 
@@ -33,10 +36,10 @@ public class AlignmentSolutionResource {
 	
 	public AlignmentSolutionResource(AlignmentSolution source) {
 		solution = source;
-		startIndexSequenceA	= source.getAlignedStartIndex(SequenceDesignator.SEQUENCE_A);
-		endIndexSequenceA	= source.getAlignedEndIndex(SequenceDesignator.SEQUENCE_A);
-		startIndexSequenceB	= source.getAlignedStartIndex(SequenceDesignator.SEQUENCE_B);
-		endIndexSequenceB	= source.getAlignedEndIndex(SequenceDesignator.SEQUENCE_B);
+		startIndexSequenceA	= solution.getAlignedStartIndex(SequenceDesignator.SEQUENCE_A);
+		endIndexSequenceA	= solution.getAlignedEndIndex(SequenceDesignator.SEQUENCE_A);
+		startIndexSequenceB	= solution.getAlignedStartIndex(SequenceDesignator.SEQUENCE_B);
+		endIndexSequenceB	= solution.getAlignedEndIndex(SequenceDesignator.SEQUENCE_B);
 	}
 
 	public String getSubSequenceA() {
@@ -65,6 +68,16 @@ public class AlignmentSolutionResource {
 
 	public int getEndIndexSequenceB() {
 		return endIndexSequenceB;
+	}
+
+	public List<Integer> getScoreContributions() {
+		return solution.getAlignedSequences().getScoreContributions();
+	}
+
+	public List<Float> getScoreContributionLevels() {
+		return solution.getAlignedSequences().getScoreContributionLevels().stream()
+				.map(level -> Math.round(level * 100) / 100.0f)
+				.collect(Collectors.toList());
 	}
 
 	public int getScore() {

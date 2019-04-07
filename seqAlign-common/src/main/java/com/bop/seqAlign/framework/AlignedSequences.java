@@ -16,33 +16,43 @@
 
 package com.bop.seqAlign.framework;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Marco Ruiz
  */
 public class AlignedSequences {
 	
+	public static final int PREFIX_LENGTH = 4;
+	public static final int BRACKET_LENGTH = 1;
+	
+	public static final String BRACKET_NULL = " ";
+	public static final String BRACKET_OPEN = ">";
+	public static final String BRACKET_CLOSE = "<";
+	
 	private static void format(StringBuffer target, int startIndex, int endIndex) {
-		String startChar = (startIndex < 0) ? " " : ">";
-		String endChar = (endIndex < 0) ? " " : "<";
+		String startChar = (startIndex < 0) ? BRACKET_NULL : BRACKET_OPEN;
+		String endChar = (endIndex < 0) ? BRACKET_NULL : BRACKET_CLOSE;
 		target.insert(0, getPreffixSuffixString(startIndex, true) + startChar);
 		target.append(endChar + getPreffixSuffixString(endIndex, false));
 	}
     
     private static String getPreffixSuffixString(int number, boolean preffix) {
-        int size = 3;
-        byte[] spaces = new byte[size];
-        for (int count = 0; count < size; count++) spaces[count] = ' ';
         String numberStr = (number == -1) ? "" : Integer.toString(number + 1);
-        String spaces2 = new String(spaces, 0, size - numberStr.length());
-        return (preffix) ? numberStr + spaces2 : spaces2 + numberStr;
+        String spaces = new String(new char[PREFIX_LENGTH - BRACKET_LENGTH - numberStr.length()]).replace("\0", " ");
+        return (preffix) ? numberStr + spaces : spaces + numberStr;
     }
 
 	private AlignmentSolution solution;
 	private final StringBuffer alignedA = new StringBuffer();
 	private final StringBuffer alignedB = new StringBuffer();
 	private final StringBuffer alignment = new StringBuffer();
+	private final List<Integer> scoreContributions = new ArrayList<>();
+	private final List<Double> scoreContributionsLevels;
 	
 	private final String alignedAStr, alignedBStr, alignmentStr;
 	
@@ -54,6 +64,7 @@ public class AlignedSequences {
 		this.solution = solution;
 		
 		solution.getTransitionDeltas().stream().forEach(this::processSymbolForDelta);
+		scoreContributionsLevels = computeScoreContributionLevels();
 		
 		if (format) format();
 		alignedAStr = alignedA.toString();
@@ -65,6 +76,25 @@ public class AlignedSequences {
 		alignedA.append(delta.getSymbolA());
 		alignedB.append(delta.getSymbolB());
 		alignment.append(delta.getSymbolAlignment());
+		scoreContributions.add(delta.getReferencedScoreDifference());
+	}
+	
+	public List<Double> getScoreContributionLevels() {
+		return scoreContributionsLevels;
+	}
+
+	/**
+	 * Creates a list of values between -1 and 1 corresponding to each symbol's score contribution level (relative
+	 * to the maximum score contribution)
+	 * 
+	 * @return
+	 */
+	private List<Double> computeScoreContributionLevels() {
+	    double max = scoreContributions.stream().mapToInt(Math::abs).max().orElse(1);
+	    return scoreContributions.stream()
+		    		.mapToDouble(score -> score / max)
+		    		.mapToObj(Double::new)
+		    		.collect(Collectors.toList());
 	}
 	
 	private void format() {
@@ -87,6 +117,10 @@ public class AlignedSequences {
 
 	public String getAlignment() {
 		return alignmentStr;
+	}
+
+	public List<Integer> getScoreContributions() {
+		return Collections.unmodifiableList(scoreContributions);
 	}
 }
 

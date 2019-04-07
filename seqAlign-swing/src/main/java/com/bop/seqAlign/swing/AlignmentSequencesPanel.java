@@ -19,10 +19,16 @@ package com.bop.seqAlign.swing;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 import com.bop.seqAlign.framework.AlignedSequences;
 
@@ -32,7 +38,19 @@ import com.bop.seqAlign.framework.AlignedSequences;
 @SuppressWarnings("serial")
 public class AlignmentSequencesPanel extends JScrollPane {
 	
-    private JLabel seqDisplayCount, seqDisplayA, seqDisplayX, seqDisplayB;
+	private static final float[] RGB = new Color(64, 0, 0).getRGBColorComponents(null);
+	private static final SimpleAttributeSet DEFAULT_COLORING = createColoringProfile(0.0f);
+
+	private static SimpleAttributeSet createColoringProfile(float alpha) {
+		SimpleAttributeSet result = new SimpleAttributeSet();
+        StyleConstants.setBackground(result, new Color(RGB[0], RGB[1], RGB[2], alpha));
+        StyleConstants.setForeground(result, alpha > 0.5 ? Color.WHITE : Color.BLACK);
+        return result;
+	}
+
+    private JTextPane seqDisplayCount, seqDisplayA, seqDisplayX, seqDisplayB;
+    private boolean color = true;
+	private List<SimpleAttributeSet> coloringProfiles;
 
     public AlignmentSequencesPanel() {
     	super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -44,20 +62,45 @@ public class AlignmentSequencesPanel extends JScrollPane {
     	setViewportView(sequences);
     }
     
-    private JLabel createSequenceDisplay(JPanel container) {
-        JLabel result = new JLabel(" ");
-        result.setFont(new Font("Courier", Font.PLAIN, 12));
-        result.setForeground(Color.black);
+    private JTextPane createSequenceDisplay(JPanel container) {
+    	JTextPane result = new JTextPane();
+    	result.setEditable(false);
+    	result.getCaret().deinstall(result);
+        result.setFont(new Font("Courier", Font.PLAIN, 14));
+        result.setForeground(Color.BLACK);
         container.add(result);
         return result;
     }
 
     public void displayAlignedSequences(AlignedSequences aligned) {
-        int alignmentLength = aligned.getAlignedA().length();
+        seqDisplayCount.setText(getNumberingLabel(25, aligned.getAlignedA().length()));
 		seqDisplayA.setText(aligned.getAlignedA());
         seqDisplayX.setText(aligned.getAlignment());
         seqDisplayB.setText(aligned.getAlignedB());
-        seqDisplayCount.setText(getNumberingLabel(25, alignmentLength));
+
+        coloringProfiles = aligned.getScoreContributionLevels().stream()
+										.map(scoreContributionLevel -> (float) ((scoreContributionLevel + 1) / 2))
+										.map(AlignmentSequencesPanel::createColoringProfile)
+										.collect(Collectors.toList());
+        applyColoring(color);
+    }
+    
+	public void applyColoring(boolean selected) {
+		color = selected;
+		applyColoring(selected ? 
+				charIndex -> coloringProfiles.get(charIndex - AlignedSequences.PREFIX_LENGTH) : 
+				charIndex -> DEFAULT_COLORING);
+	}
+    
+	private void applyColoring(Function<Integer, SimpleAttributeSet> profileProvider) {
+        IntStream.range(AlignedSequences.PREFIX_LENGTH, seqDisplayA.getText().length() - AlignedSequences.PREFIX_LENGTH)
+        	.forEach(charIndex -> applyColoring(charIndex, profileProvider.apply(charIndex)));
+	}
+
+    private void applyColoring(int charIndex, SimpleAttributeSet coloringProfile) {
+		seqDisplayA.getStyledDocument().setCharacterAttributes(charIndex, 1, coloringProfile, true);
+		seqDisplayX.getStyledDocument().setCharacterAttributes(charIndex, 1, coloringProfile, true);
+		seqDisplayB.getStyledDocument().setCharacterAttributes(charIndex, 1, coloringProfile, true);
     }
 
     private String getNumberingLabel(int interval, int max) {
