@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author Marco Ruiz
@@ -52,7 +51,7 @@ public class AlignedSequences {
 	private final StringBuffer alignedB = new StringBuffer();
 	private final StringBuffer alignment = new StringBuffer();
 	private final List<Integer> scoreContributions = new ArrayList<>();
-	private final List<Double> scoreContributionsLevels;
+	private final List<Float> scoreContributionLevels = new ArrayList<>();
 	
 	private final String alignedAStr, alignedBStr, alignmentStr;
 	
@@ -64,7 +63,6 @@ public class AlignedSequences {
 		this.solution = solution;
 		
 		solution.getTransitionDeltas().stream().forEach(this::processSymbolForDelta);
-		scoreContributionsLevels = computeScoreContributionLevels();
 		
 		if (format) format();
 		alignedAStr = alignedA.toString();
@@ -76,27 +74,14 @@ public class AlignedSequences {
 		alignedA.append(delta.getSymbolA());
 		alignedB.append(delta.getSymbolB());
 		alignment.append(delta.getSymbolAlignment());
-		scoreContributions.add(delta.getReferencedScoreDifference());
+		scoreContributions.add(delta.getScoreContribution());
+		scoreContributionLevels.add(delta.getScoreContributionLevel());
 	}
 	
-	public List<Double> getScoreContributionLevels() {
-		return scoreContributionsLevels;
+	public List<Float> getScoreContributionLevels() {
+		return scoreContributionLevels;
 	}
 
-	/**
-	 * Creates a list of values between -1 and 1 corresponding to each symbol's score contribution level (relative
-	 * to the maximum score contribution)
-	 * 
-	 * @return
-	 */
-	private List<Double> computeScoreContributionLevels() {
-	    double max = scoreContributions.stream().mapToInt(Math::abs).max().orElse(1);
-	    return scoreContributions.stream()
-		    		.mapToDouble(score -> score / max)
-		    		.mapToObj(Double::new)
-		    		.collect(Collectors.toList());
-	}
-	
 	private void format() {
 		format(alignedA, Transition::getIndexA);
 		format(alignedB, Transition::getIndexB);

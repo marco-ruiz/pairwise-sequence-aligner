@@ -39,14 +39,23 @@ public class AlignmentSolution {
 	private final AlignedSequences alignedSequences;
 	private final int positives, identities;
 	private final int positivesPercentage, identitiesPercentage;
+	private int maxScoreContribution;
 	
 	public AlignmentSolution(AlignmentMatrix matrix, Transition start) {
 		this.valuesMatrix = matrix;
         readTraceBack(start);
         
+        // Deltas
         wholeDelta = new TransitionDelta(matrix, getTransition(0), getLastTransition());
 		for (int index = 1; index < getTransitions().size(); index++)
 			transitionDeltas.add(new TransitionDelta(matrix, getTransition(index - 1), getTransition(index)));
+		
+		maxScoreContribution = transitionDeltas.stream()
+				.map(TransitionDelta::getScoreContribution)
+				.mapToInt(Math::abs)
+				.max().orElse(1);
+		
+		transitionDeltas.forEach(delta -> delta.setMaxScoreContribution(maxScoreContribution));
 
         // Stats
 		alignedSequences = new AlignedSequences(this);
@@ -68,6 +77,10 @@ public class AlignmentSolution {
 
     public List<TransitionDelta> getTransitionDeltas() {
 		return Collections.unmodifiableList(transitionDeltas);
+    }
+
+    public double getMaxScoreContribution() {
+	    return maxScoreContribution;
     }
 
 	public TransitionDelta getWholeDelta() {

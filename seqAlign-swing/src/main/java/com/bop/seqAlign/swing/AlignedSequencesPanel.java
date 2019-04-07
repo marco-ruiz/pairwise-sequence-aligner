@@ -28,31 +28,22 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 
+import com.bop.common.swing.TextProfileFactory;
 import com.bop.seqAlign.framework.AlignedSequences;
 
 /**
  * @author Marco Ruiz
  */
 @SuppressWarnings("serial")
-public class AlignmentSequencesPanel extends JScrollPane {
+public class AlignedSequencesPanel extends JScrollPane {
 	
-	private static final float[] RGB = new Color(64, 0, 0).getRGBColorComponents(null);
-	private static final SimpleAttributeSet DEFAULT_COLORING = createColoringProfile(0.0f);
-
-	private static SimpleAttributeSet createColoringProfile(float alpha) {
-		SimpleAttributeSet result = new SimpleAttributeSet();
-        StyleConstants.setBackground(result, new Color(RGB[0], RGB[1], RGB[2], alpha));
-        StyleConstants.setForeground(result, alpha > 0.5 ? Color.WHITE : Color.BLACK);
-        return result;
-	}
-
     private JTextPane seqDisplayCount, seqDisplayA, seqDisplayX, seqDisplayB;
-    private boolean color = true;
+    private boolean coloringEnabled = true;
 	private List<SimpleAttributeSet> coloringProfiles;
+	private TextProfileFactory textProfileFactory = new TextProfileFactory(175);
 
-    public AlignmentSequencesPanel() {
+    public AlignedSequencesPanel() {
     	super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JPanel sequences = new JPanel(new GridLayout(4, 0));
         seqDisplayCount = createSequenceDisplay(sequences);
@@ -79,28 +70,31 @@ public class AlignmentSequencesPanel extends JScrollPane {
         seqDisplayB.setText(aligned.getAlignedB());
 
         coloringProfiles = aligned.getScoreContributionLevels().stream()
-										.map(scoreContributionLevel -> (float) ((scoreContributionLevel + 1) / 2))
-										.map(AlignmentSequencesPanel::createColoringProfile)
+										.map(textProfileFactory::createTextProfile)
 										.collect(Collectors.toList());
-        applyColoring(color);
+        applyColoring();
     }
     
-	public void applyColoring(boolean selected) {
-		color = selected;
-		applyColoring(selected ? 
-				charIndex -> coloringProfiles.get(charIndex - AlignedSequences.PREFIX_LENGTH) : 
-				charIndex -> DEFAULT_COLORING);
-	}
-    
-	private void applyColoring(Function<Integer, SimpleAttributeSet> profileProvider) {
-        IntStream.range(AlignedSequences.PREFIX_LENGTH, seqDisplayA.getText().length() - AlignedSequences.PREFIX_LENGTH)
-        	.forEach(charIndex -> applyColoring(charIndex, profileProvider.apply(charIndex)));
+	public void setColoringEnabled(boolean enabled) {
+		coloringEnabled = enabled;
+        applyColoring();
 	}
 
-    private void applyColoring(int charIndex, SimpleAttributeSet coloringProfile) {
+	private void applyColoring() {
+		IntStream.range(AlignedSequences.PREFIX_LENGTH, seqDisplayA.getText().length() - AlignedSequences.PREFIX_LENGTH)
+        	.forEach(charIndex -> applyColoringToSymbol(charIndex, getColoringProfile(charIndex)));
+	}
+
+    private void applyColoringToSymbol(int charIndex, SimpleAttributeSet coloringProfile) {
 		seqDisplayA.getStyledDocument().setCharacterAttributes(charIndex, 1, coloringProfile, true);
 		seqDisplayX.getStyledDocument().setCharacterAttributes(charIndex, 1, coloringProfile, true);
 		seqDisplayB.getStyledDocument().setCharacterAttributes(charIndex, 1, coloringProfile, true);
+    }
+    
+    private SimpleAttributeSet getColoringProfile(int charIndex) {
+    	return coloringEnabled ? 
+    				coloringProfiles.get(charIndex - AlignedSequences.PREFIX_LENGTH) : 
+    				textProfileFactory.getDefaultProfile();
     }
 
     private String getNumberingLabel(int interval, int max) {

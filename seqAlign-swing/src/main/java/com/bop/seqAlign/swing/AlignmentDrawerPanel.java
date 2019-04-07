@@ -32,7 +32,7 @@ import com.bop.seqAlign.framework.TransitionDelta;
 public class AlignmentDrawerPanel extends SegmentsDrawerPanel<TransitionDelta> {
 
 	public static Segment createSegment(TransitionDelta delta) {
-		Color color = (delta.getReferencedScoreDifference() > 0) ? Color.black : Color.white;
+		Color color = (delta.getScoreContribution() > 0) ? Color.black : Color.white;
 		Point start = new Point(delta.getPrevious().getCoords().getX(), delta.getPrevious().getCoords().getY());
 		Point end = new Point(delta.getCurrent().getCoords().getX(), delta.getCurrent().getCoords().getY());
 		return new Segment(start, end, color);

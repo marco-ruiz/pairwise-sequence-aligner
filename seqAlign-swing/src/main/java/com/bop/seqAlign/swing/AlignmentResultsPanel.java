@@ -43,7 +43,7 @@ public class AlignmentResultsPanel extends JPanel {
     private JButton goBack = new JButton("Back");
 
     private AlignmentDrawerPanel drawerPanel = new AlignmentDrawerPanel();
-	private AlignmentSequencesPanel sequencesPanel = new AlignmentSequencesPanel();
+	private AlignedSequencesPanel sequencesPanel = new AlignedSequencesPanel();
 
     public AlignmentResultsPanel(Runnable restarter) {
         setLayout(new BorderLayout());
@@ -51,7 +51,7 @@ public class AlignmentResultsPanel extends JPanel {
         
         goBack.addActionListener(e -> restarter.run());
         solutionChoice.addActionListener(e -> displaySolution(solutionChoice.getSelectedIndex()));
-        colorCheck.addActionListener(e -> sequencesPanel.applyColoring(colorCheck.isSelected()));
+        colorCheck.addActionListener(e -> sequencesPanel.setColoringEnabled(colorCheck.isSelected()));
         
         add(new SectionPanel("Alignment Plot", drawerPanel), BorderLayout.CENTER);
     	add(createStatsPanel(), BorderLayout.SOUTH);

@@ -30,7 +30,8 @@ public class TransitionDelta {
 	// Computed
 	private final char symbolA, symbolB, symbolAlignment;
 	private final TwoDimensionalCoordinates distance;
-	private final int referencedScoreDifference;
+	private final int scoreContribution;
+	private float scoreContributionLevel = Float.NaN;
 	
 	public TransitionDelta(TransitionDelta target) {
 		this(target.source, target.previous, target.current);
@@ -42,23 +43,33 @@ public class TransitionDelta {
 		this.current = current;
 
 		this.distance = current.getCoords().substract(previous.getCoords());
-		this.referencedScoreDifference = getReferencedScore(current) - getReferencedScore(previous);
+		this.scoreContribution = getReferencedScore(current) - getReferencedScore(previous);
 
 		this.symbolA = computeSymbol(SequenceDesignator.SEQUENCE_A);
 		this.symbolB = computeSymbol(SequenceDesignator.SEQUENCE_B);
 		this.symbolAlignment = (symbolA == symbolB) ? symbolA : getScoreDifferenceSymbol(); 
+	}
+	
+	/**
+	 * Creates a value between -1 and 1 corresponding to this symbol's score contribution level (relative
+	 * to the maximum score contribution)
+	 * 
+	 * @return
+	 */
+	public void setMaxScoreContribution(int max) {
+		this.scoreContributionLevel = (max == 0) ? Float.NaN : Math.round(100.0 * scoreContribution / max) / 100.0f;
 	}
 
 	private int getReferencedScore(Transition transition) {
 		return source.getReferencedTransition(transition).getScore();
 	}
 
-	public int getScore() {
+	public int getAccumulatedScore() {
 		return getReferencedScore(current);
 	}
 
 	private char getScoreDifferenceSymbol() {
-		return referencedScoreDifference > 0 ? AlignmentSolution.POSITIVE_SYMBOL : AlignmentSolution.NEGATIVE_SYMBOL;
+		return scoreContribution > 0 ? AlignmentSolution.POSITIVE_SYMBOL : AlignmentSolution.NEGATIVE_SYMBOL;
 	}
 
 	private char computeSymbol(SequenceDesignator designator) {
@@ -97,7 +108,11 @@ public class TransitionDelta {
 		return distance;
 	}
 	
-	public int getReferencedScoreDifference() {
-		return referencedScoreDifference;
+	public int getScoreContribution() {
+		return scoreContribution;
+	}
+	
+	public float getScoreContributionLevel() {
+		return scoreContributionLevel;
 	}
 }

@@ -17,7 +17,6 @@
 package com.bop.seqAlign.ws.web.resource;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.bop.seqAlign.framework.AlignmentSolution;
 import com.bop.seqAlign.framework.SequenceDesignator;
@@ -29,10 +28,10 @@ public class AlignmentSolutionResource {
 	
 	private AlignmentSolution solution;
 	
-	private int startIndexSequenceA;
-	private int endIndexSequenceA;
-	private int startIndexSequenceB;
-	private int endIndexSequenceB;
+	private final int startIndexSequenceA;
+	private final int endIndexSequenceA;
+	private final int startIndexSequenceB;
+	private final int endIndexSequenceB;
 	
 	public AlignmentSolutionResource(AlignmentSolution source) {
 		solution = source;
@@ -75,9 +74,7 @@ public class AlignmentSolutionResource {
 	}
 
 	public List<Float> getScoreContributionLevels() {
-		return solution.getAlignedSequences().getScoreContributionLevels().stream()
-				.map(level -> Math.round(level * 100) / 100.0f)
-				.collect(Collectors.toList());
+		return solution.getAlignedSequences().getScoreContributionLevels();
 	}
 
 	public int getScore() {
