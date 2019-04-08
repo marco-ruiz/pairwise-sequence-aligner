@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -28,8 +27,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
-import com.bop.common.swing.TextProfileFactory;
+import com.bop.common.swing.ColorByLevelFactory;
 import com.bop.seqAlign.framework.AlignedSequences;
 
 /**
@@ -41,16 +41,18 @@ public class AlignedSequencesPanel extends JScrollPane {
     private JTextPane seqDisplayCount, seqDisplayA, seqDisplayX, seqDisplayB;
     private boolean coloringEnabled = true;
 	private List<SimpleAttributeSet> coloringProfiles;
-	private TextProfileFactory textProfileFactory = new TextProfileFactory(175);
+	
+	private ColorByLevelFactory colorByLevelFactory = new ColorByLevelFactory(175);
+	private SimpleAttributeSet defaultColoringProfile = createTextProfile(0);
 
     public AlignedSequencesPanel() {
     	super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JPanel sequences = new JPanel(new GridLayout(4, 0));
+    	setViewportView(sequences);
         seqDisplayCount = createSequenceDisplay(sequences);
         seqDisplayA = createSequenceDisplay(sequences);
         seqDisplayX = createSequenceDisplay(sequences);
         seqDisplayB = createSequenceDisplay(sequences);
-    	setViewportView(sequences);
     }
     
     private JTextPane createSequenceDisplay(JPanel container) {
@@ -64,16 +66,27 @@ public class AlignedSequencesPanel extends JScrollPane {
     }
 
     public void displayAlignedSequences(AlignedSequences aligned) {
-        seqDisplayCount.setText(getNumberingLabel(25, aligned.getAlignedA().length()));
-		seqDisplayA.setText(aligned.getAlignedA());
-        seqDisplayX.setText(aligned.getAlignment());
-        seqDisplayB.setText(aligned.getAlignedB());
+        seqDisplayCount.setText(getNumberingLabel(25, aligned.getLength()));
+		seqDisplayA.setText(aligned.getFormattedAlignedA());
+        seqDisplayX.setText(aligned.getFormattedAlignment());
+        seqDisplayB.setText(aligned.getFormattedAlignedB());
 
         coloringProfiles = aligned.getScoreContributionLevels().stream()
-										.map(textProfileFactory::createTextProfile)
+										.map(this::createTextProfile)
 										.collect(Collectors.toList());
         applyColoring();
     }
+    
+	/**
+	 * @param colorLevel Value within [-1, 1]
+	 * @return
+	 */
+	public SimpleAttributeSet createTextProfile(float colorLevel) {
+		SimpleAttributeSet result = new SimpleAttributeSet();
+		if (Float.isNaN(colorLevel)) return result;
+		StyleConstants.setBackground(result, colorByLevelFactory.createColor(colorLevel));
+        return result;
+	}
     
 	public void setColoringEnabled(boolean enabled) {
 		coloringEnabled = enabled;
@@ -81,7 +94,8 @@ public class AlignedSequencesPanel extends JScrollPane {
 	}
 
 	private void applyColoring() {
-		IntStream.range(AlignedSequences.PREFIX_LENGTH, seqDisplayA.getText().length() - AlignedSequences.PREFIX_LENGTH)
+		int affixLen = AlignedSequences.FORMATTER.getQuoteAffixTotalLength();
+		IntStream.range(affixLen, seqDisplayA.getText().length() - affixLen)
         	.forEach(charIndex -> applyColoringToSymbol(charIndex, getColoringProfile(charIndex)));
 	}
 
@@ -93,11 +107,11 @@ public class AlignedSequencesPanel extends JScrollPane {
     
     private SimpleAttributeSet getColoringProfile(int charIndex) {
     	return coloringEnabled ? 
-    				coloringProfiles.get(charIndex - AlignedSequences.PREFIX_LENGTH) : 
-    				textProfileFactory.getDefaultProfile();
+    				coloringProfiles.get(charIndex - AlignedSequences.FORMATTER.getQuoteAffixTotalLength()) : 
+    				defaultColoringProfile;
     }
 
-    private String getNumberingLabel(int interval, int max) {
+    private static String getNumberingLabel(int interval, int max) {
         StringBuffer text = new StringBuffer(max);
         String number;
         for (int count = interval; count < max; count += interval) {

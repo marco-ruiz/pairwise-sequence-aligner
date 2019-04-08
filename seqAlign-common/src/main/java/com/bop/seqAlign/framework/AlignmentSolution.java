@@ -59,10 +59,10 @@ public class AlignmentSolution {
 
         // Stats
 		alignedSequences = new AlignedSequences(this);
-		positives = AlignmentUtils.parseIdentities(alignedSequences.getAlignment(), false);
-		identities = AlignmentUtils.parseIdentities(alignedSequences.getAlignment(), true);
-		positivesPercentage = positives * 100 / alignedSequences.getAlignment().length();
-		identitiesPercentage = identities * 100 / alignedSequences.getAlignment().length();
+		positives = (int) transitionDeltas.stream().filter(TransitionDelta::isPositive).count();
+		identities = (int) transitionDeltas.stream().filter(TransitionDelta::isIdentity).count();
+		positivesPercentage = positives * 100 / alignedSequences.getLength();
+		identitiesPercentage = identities * 100 / alignedSequences.getLength();
 	}
 	
     private void readTraceBack(Transition start) {

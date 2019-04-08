@@ -18,40 +18,35 @@ package com.bop.common.swing;
 
 import java.awt.Color;
 
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-
 /**
  * @author Marco Ruiz
  */
-public class TextProfileFactory {
+public class ColorByLevelFactory {
 	
 	private final float[] rgbPositive;
 	private final float[] rgbNegative;
-	private final SimpleAttributeSet defaultProfile;
+	private final Color defaultColor;
 
-	public TextProfileFactory(int rbValue) {
+	public ColorByLevelFactory(int rbValue) {
 		this(new Color(rbValue, 0, 0), new Color(0, 0, rbValue));
 	}
 	
-	public TextProfileFactory(Color positiveColor, Color negativeColor) {
+	public ColorByLevelFactory(Color positiveColor, Color negativeColor) {
 		rgbPositive = positiveColor.getRGBColorComponents(null);
 		rgbNegative = negativeColor.getRGBColorComponents(null);
-		defaultProfile = createTextProfile(0);
+		defaultColor = createColor(0);
 	}
 	
 	/**
 	 * @param colorLevel Value within [-1, 1]
 	 * @return
 	 */
-	public SimpleAttributeSet createTextProfile(float colorLevel) {
-		SimpleAttributeSet result = new SimpleAttributeSet();
+	public Color createColor(float colorLevel) {
 		float[] rgb = (colorLevel > 0) ? rgbPositive : rgbNegative;
-		StyleConstants.setBackground(result, new Color(rgb[0], rgb[1], rgb[2], Math.abs(colorLevel * 0.5f)));
-        return result;
+		return new Color(rgb[0], rgb[1], rgb[2], Math.abs(colorLevel * 0.5f));
 	}
 
-	public SimpleAttributeSet getDefaultProfile() {
-		return defaultProfile;
+	public Color getDefaultColor() {
+		return defaultColor;
 	}
 }

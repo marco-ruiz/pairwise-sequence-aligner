@@ -19,93 +19,83 @@ package com.bop.seqAlign.framework;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+
+import com.bop.common.utils.StringQuoter;
 
 /**
  * @author Marco Ruiz
  */
 public class AlignedSequences {
 	
-	public static final int PREFIX_LENGTH = 4;
-	public static final int BRACKET_LENGTH = 1;
-	
-	public static final String BRACKET_NULL = " ";
-	public static final String BRACKET_OPEN = ">";
-	public static final String BRACKET_CLOSE = "<";
-	
-	private static void format(StringBuffer target, int startIndex, int endIndex) {
-		String startChar = (startIndex < 0) ? BRACKET_NULL : BRACKET_OPEN;
-		String endChar = (endIndex < 0) ? BRACKET_NULL : BRACKET_CLOSE;
-		target.insert(0, getPreffixSuffixString(startIndex, true) + startChar);
-		target.append(endChar + getPreffixSuffixString(endIndex, false));
-	}
+    public static final StringQuoter FORMATTER = new StringQuoter(4, '>', '<', ' ');
     
-    private static String getPreffixSuffixString(int number, boolean preffix) {
-        String numberStr = (number == -1) ? "" : Integer.toString(number + 1);
-        String spaces = new String(new char[PREFIX_LENGTH - BRACKET_LENGTH - numberStr.length()]).replace("\0", " ");
-        return (preffix) ? numberStr + spaces : spaces + numberStr;
-    }
+	private final int length;
+	private String alignedA = "";
+	private String alignedB = "";
+	private String alignment = "";
+	private final String formattedAlignedA, formattedAlignedB, formattedAlignment;
 
-	private AlignmentSolution solution;
-	private final StringBuffer alignedA = new StringBuffer();
-	private final StringBuffer alignedB = new StringBuffer();
-	private final StringBuffer alignment = new StringBuffer();
 	private final List<Integer> scoreContributions = new ArrayList<>();
 	private final List<Float> scoreContributionLevels = new ArrayList<>();
 	
-	private final String alignedAStr, alignedBStr, alignmentStr;
-	
 	public AlignedSequences(AlignmentSolution solution) {
-		this(solution, true);
-	}
-	
-	public AlignedSequences(AlignmentSolution solution, boolean format) {
-		this.solution = solution;
-		
 		solution.getTransitionDeltas().stream().forEach(this::processSymbolForDelta);
+		length = alignedA.length();
+
+		Transition firstTransition = solution.getTransitions().get(0);
+		Transition lastTransition = solution.getLastTransition();
 		
-		if (format) format();
-		alignedAStr = alignedA.toString();
-		alignedBStr = alignedB.toString();
-		alignmentStr = alignment.toString();
+		formattedAlignedA = FORMATTER.format(alignedA, firstTransition.getIndexA(), lastTransition.getIndexA());
+		formattedAlignedB = FORMATTER.format(alignedB, firstTransition.getIndexB(), lastTransition.getIndexB());
+		formattedAlignment = FORMATTER.format(alignment, -1, -1);
 	}
 	
 	private void processSymbolForDelta(TransitionDelta delta) {
-		alignedA.append(delta.getSymbolA());
-		alignedB.append(delta.getSymbolB());
-		alignment.append(delta.getSymbolAlignment());
+		alignedA += delta.getSymbolA();
+		alignedB += delta.getSymbolB();
+		alignment += delta.getSymbolAlignment();
 		scoreContributions.add(delta.getScoreContribution());
 		scoreContributionLevels.add(delta.getScoreContributionLevel());
 	}
 	
-	public List<Float> getScoreContributionLevels() {
-		return scoreContributionLevels;
+	public int getAffixLength() {
+		return FORMATTER.getQuoteAffixTotalLength();
 	}
 
-	private void format() {
-		format(alignedA, Transition::getIndexA);
-		format(alignedB, Transition::getIndexB);
-		format(alignment, -1, -1);
+	public int getLength() {
+		return length;
 	}
 	
-	private void format(StringBuffer target, Function<Transition, Integer> indexProvider) {
-		format(target, indexProvider.apply(solution.getTransitions().get(0)), indexProvider.apply(solution.getLastTransition()));
-	}
-
 	public String getAlignedA() {
-		return alignedAStr;
+		return alignedA;
 	}
 
 	public String getAlignedB() {
-		return alignedBStr;
+		return alignedB;
 	}
 
 	public String getAlignment() {
-		return alignmentStr;
+		return alignment;
+	}
+
+	public String getFormattedAlignedA() {
+		return formattedAlignedA;
+	}
+
+	public String getFormattedAlignedB() {
+		return formattedAlignedB;
+	}
+
+	public String getFormattedAlignment() {
+		return formattedAlignment;
 	}
 
 	public List<Integer> getScoreContributions() {
 		return Collections.unmodifiableList(scoreContributions);
+	}
+	
+	public List<Float> getScoreContributionLevels() {
+		return Collections.unmodifiableList(scoreContributionLevels);
 	}
 }
 

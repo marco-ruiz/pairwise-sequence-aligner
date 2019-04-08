@@ -107,7 +107,7 @@ public class AlignmentResultsPanel extends JPanel {
     		solution.getScore(), 
     		solution.getPositives(), solution.getPositivesPercentage(), 
     		solution.getIdentities(), solution.getIdentitiesPercentage(), 
-    		solution.getAlignedSequences().getAlignedA().length(), 
+    		solution.getAlignedSequences().getLength(), 
     		alignment.getSequenceA().length(), alignment.getSequenceB().length());
 	}
 }

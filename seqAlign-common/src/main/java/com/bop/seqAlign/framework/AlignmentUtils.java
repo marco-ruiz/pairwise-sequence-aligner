@@ -60,43 +60,4 @@ public class AlignmentUtils {
 
         return result;
     }
-
-	public static int parseIdentities(String solStr, boolean onlyPositives) {
-	    char c;
-	    int identities = 0;
-	
-	    for (int count = 1; count < solStr.length(); count++) {
-	        // If moved diagonal
-	        c = solStr.charAt(count - 1);
-	        if ((c != ' ') && (c != '+')) {
-	            identities++;
-	        } else if ((c == '+') && (!onlyPositives)) {
-	            identities++;
-	        }
-	    }
-	    return identities;
-	}
-	
-/*
-	private static List<String> getResourcesList(String relPath) {
-		if (relPath == null || relPath.equals("")) relPath = "/";
-		List<String> result = new ArrayList<String>();
-		InputStream dirStream = ScoringMatrix.class.getResourceAsStream(relPath);
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dirStream));
-
-		String line;
-		try {
-	        while ((line = bufferedReader.readLine()) != null) {
-				result.add(line);
-			}
-		} catch (IOException e) {
-		} finally {
-			try {
-				dirStream.close();
-			} catch (IOException e) {
-			}
-		}
-		return result;
-	}
-*/	
 }

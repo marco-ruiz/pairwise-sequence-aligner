@@ -108,6 +108,14 @@ public class TransitionDelta {
 		return distance;
 	}
 	
+	public boolean isIdentity() {
+		return symbolA == symbolB;
+	}
+	
+	public boolean isPositive() {
+		return scoreContribution > 0;
+	}
+	
 	public int getScoreContribution() {
 		return scoreContribution;
 	}
