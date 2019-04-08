@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,53 +27,41 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import com.bop.seqAlign.framework.AlignmentMatrix;
-
 /**
  * @author Marco Ruiz
  */
 @SuppressWarnings("serial")
-public class SequenceAligner extends JPanel {
+public class SequenceAlignerApp extends JFrame {
 
 	private static final ExecutorService executor = Executors.newFixedThreadPool(1);
 	
-    private JFrame appFrame;
-    private InputParametersPanel startup = new InputParametersPanel(this::runAlignment);
-
+    private JPanel contentPane = new JPanel(new BorderLayout());
+    private InputParametersPanel startup = new InputParametersPanel(this::runAlignmentSync);
     private AlignmentResultsPanel resultsPane = new AlignmentResultsPanel(this::restart);
 
-    public SequenceAligner() {
-    	setLayout(new BorderLayout());
-    	buildFrame();
-        restart();
-    }
-
-    private void buildFrame() {
-        appFrame = new JFrame("Pairwise Sequence Alignment Tool");
-        appFrame.setSize(700, 500);
-        appFrame.setVisible(true);
-        appFrame.setContentPane(this);
-        appFrame.validate();
-        appFrame.repaint();
-        appFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        appFrame.addWindowListener(new WindowAdapter() {
+    public SequenceAlignerApp() {
+        super("Pairwise Sequence Alignment Tool");
+        setSize(700, 500);
+        setVisible(true);
+        setContentPane(contentPane);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(1);
             }
         });
+        restart();
     }
 
     public void restart(){
     	switchUserInterface(true);
-        validate();
-        repaint();
     }
     
     public void switchUserInterface(boolean definition) {
-    	remove(getUserInterface(!definition));
-    	add(getUserInterface(definition));
-        appFrame.validate();
-        appFrame.repaint();
+    	contentPane.removeAll();
+    	contentPane.add(getUserInterface(definition));
+        validate();
+        repaint();
     }
 
 	private Component getUserInterface(boolean definition) {
@@ -88,15 +75,13 @@ public class SequenceAligner extends JPanel {
     public void runAlignmentSync() {
         switchUserInterface(false);
 		try {
-			updateAlignment(startup.getAlignmentDescriptor().createAlignment());
-		} catch (IOException e) {}
+			resultsPane.setAlignmentMatrix(startup.getAlignmentDescriptor().createAlignment());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
-	private void updateAlignment(AlignmentMatrix alignment) {
-		resultsPane.setAlignmentMatrix(alignment);
-	}
-
     public static void main(String[] args) {
-        new SequenceAligner();
+        new SequenceAlignerApp();
     }
 }
