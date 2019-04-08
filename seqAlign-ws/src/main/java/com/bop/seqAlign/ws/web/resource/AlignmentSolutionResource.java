@@ -16,8 +16,7 @@
 
 package com.bop.seqAlign.ws.web.resource;
 
-import java.util.List;
-
+import com.bop.seqAlign.framework.AlignedSequences;
 import com.bop.seqAlign.framework.AlignmentSolution;
 import com.bop.seqAlign.framework.SequenceDesignator;
 
@@ -41,16 +40,8 @@ public class AlignmentSolutionResource {
 		endIndexSequenceB	= solution.getAlignedEndIndex(SequenceDesignator.SEQUENCE_B);
 	}
 
-	public String getSubSequenceA() {
-		return solution.getAlignedSequences().getAlignedA();
-	}
-
-	public String getSubSequenceB() {
-		return solution.getAlignedSequences().getAlignedB();
-	}
-
-	public String getAlignmentSequence() {
-		return solution.getAlignedSequences().getAlignment();
+	public AlignedSequences getAlignedSequences() {
+		return solution.getAlignedSequences();
 	}
 
 	public int getStartIndexSequenceA() {
@@ -67,14 +58,6 @@ public class AlignmentSolutionResource {
 
 	public int getEndIndexSequenceB() {
 		return endIndexSequenceB;
-	}
-
-	public List<Integer> getScoreContributions() {
-		return solution.getAlignedSequences().getScoreContributions();
-	}
-
-	public List<Float> getScoreContributionLevels() {
-		return solution.getAlignedSequences().getScoreContributionLevels();
 	}
 
 	public int getScore() {

@@ -20,6 +20,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,14 +38,14 @@ import com.bop.seqAlign.ws.web.resource.AlignmentResource;
 @RequestMapping(value = "/api/align", produces = MediaTypes.HAL_JSON_VALUE)
 public class AlignmentSolutionController {	//extends BaseController {
 	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResourceSupport> create(@RequestBody AlignmentDescriptorDTO thingDTO) {
 		return createResponse(thingDTO);
 	}
 
 	private ResponseEntity<ResourceSupport> createResponse(AlignmentDescriptor.Builder descriptorBuilder) {
-		AlignmentResource resource = new AlignmentResource(descriptorBuilder.build().createAlignment());
-		return ResponseEntity.ok(resource);
+		return ResponseEntity.ok(new AlignmentResource(descriptorBuilder.build().createAlignment()));
 	}
 
 	@SuppressWarnings("unused")
