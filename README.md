@@ -5,6 +5,22 @@ This project consists of:
 - An implementation of the pairwise alignment algorithms for local, global, repeated and overlap global, plugged into the framework.
 - A series of front end applications which (leveraging on the framework) allow end users to align sequences.
 
+## ReactJS Application
+
+- Web application built using Javascript, React and Material UI.
+- A hosted version can be found at: [https://pairwise-alignment.herokuapp.com/](https://pairwise-alignment.herokuapp.com/) 
+
+#### Usage
+
+- Launch the web server by issuing the following command from the cloned project directory:
+
+```
+./gradlew bootRun
+```
+- Point your browser to `http://localhost:8080/`
+- Enter the parameters of the alignment and press the `Align` button
+
+
 ## Web Service Application
 
 - Spring boot based REST web service.
