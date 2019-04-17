@@ -19,6 +19,7 @@ bootJar {
 
 dependencies {
 	compile project(':seqAlign-common')
+	runtimeOnly project(':seqAlign-js')
 	
 	// Spring Boot
 	compile 'org.springframework.boot:spring-boot-starter-data-rest'

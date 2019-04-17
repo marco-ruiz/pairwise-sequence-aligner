@@ -4,7 +4,7 @@ import './index.css';
 import AppPage from './components/AppPage';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<AppPage apiUrl='http://localhost:8080/api/align'/>, document.getElementById('root'));
+ReactDOM.render(<AppPage apiUrl='/api/align'/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

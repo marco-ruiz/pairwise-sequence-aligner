@@ -16,7 +16,7 @@ out
 # other generated files
 bin/
 gen/
-build/
+build*/
 target/
 .README.md.html
 src/generated
@@ -40,5 +40,9 @@ local.properties
 #NDK
 obj/
 
-
 tmp/
+
+# Javascript
+node_modules/
+public/dist/
+.env.*
