@@ -27,10 +27,12 @@ configure([project(':seqAlign-common'), project(':seqAlign-swing'), project(':se
 	
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
+	build.mustRunAfter clean
 }
 
 subprojects {
 	version = '1.0'
+	task stage(dependsOn: ['build', 'clean'])
 }
 
 defaultTasks 'build'
@@ -40,4 +42,3 @@ wrapper {
 	gradleVersion = '5.0'
 	distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
-
