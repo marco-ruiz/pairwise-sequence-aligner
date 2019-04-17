@@ -79,4 +79,8 @@ public class AlignmentSolutionResource {
 	public double getIdentitiesPercentage() {
 		return solution.getIdentitiesPercentage();
 	}
+	
+	public double getEValue() {
+		return solution.getEValue();
+	}
 }
