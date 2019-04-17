@@ -38,6 +38,21 @@ import com.bop.seqAlign.framework.AlignedSequences;
 @SuppressWarnings("serial")
 public class AlignedSequencesPanel extends JScrollPane {
 	
+    private static String getNumberingLabel(int interval, int totalLength) {
+        StringBuffer text = new StringBuffer(totalLength);
+        for (int count = interval; count < totalLength; count += interval) 
+            text.append(getLeftPadded(Integer.toString(count), interval));
+        return text.toString();
+    }
+
+	private static String getLeftPadded(String content, int totalLength) {
+		return getSpaces(totalLength - content.length()) + content;
+	}
+
+	private static String getSpaces(int numberOfSpaces) {
+		return new String(new char[numberOfSpaces]).replace("\0", " ");
+	}
+
     private JTextPane seqDisplayCount, seqDisplayA, seqDisplayX, seqDisplayB;
     private boolean coloringEnabled = true;
 	private List<SimpleAttributeSet> coloringProfiles;
@@ -66,7 +81,7 @@ public class AlignedSequencesPanel extends JScrollPane {
     }
 
     public void displayAlignedSequences(AlignedSequences aligned) {
-        seqDisplayCount.setText(getNumberingLabel(25, aligned.getLength()));
+        seqDisplayCount.setText(getSpaces(aligned.getAffixLength()) + getNumberingLabel(10, aligned.getLength()));
 		seqDisplayA.setText(aligned.getFormattedAlignedA());
         seqDisplayX.setText(aligned.getFormattedAlignment());
         seqDisplayB.setText(aligned.getFormattedAlignedB());
@@ -109,16 +124,5 @@ public class AlignedSequencesPanel extends JScrollPane {
     	return coloringEnabled ? 
     				coloringProfiles.get(charIndex - AlignedSequences.FORMATTER.getQuoteAffixTotalLength()) : 
     				defaultColoringProfile;
-    }
-
-    private static String getNumberingLabel(int interval, int max) {
-        StringBuffer text = new StringBuffer(max);
-        String number;
-        for (int count = interval; count < max; count += interval) {
-            number = Integer.toString(count);
-            for (int spaces = 0; spaces < interval - number.length(); spaces++) text.append(' ');
-            text.append(number);
-        }
-        return new String(text);
     }
 }
