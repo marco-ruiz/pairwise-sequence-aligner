@@ -3,3 +3,6 @@ rootProject.name = 'seqAlign'
 include 'seqAlign-common'
 include 'seqAlign-ws'
 include 'seqAlign-swing'
+
+include 'seqAlign-js'
+//include 'seqAlign-web'

@@ -1,0 +1,28 @@
+apply plugin: 'base'
+
+configurations {
+	bootFatJar { transitive false }
+	bootDependency { transitive false }
+}
+  
+//configurations.default.extendsFrom(configurations.bootFatJar)
+//configurations.default.extendsFrom(configurations.bootDependency)
+
+dependencies {
+	bootFatJar project(':seqAlign-ws')
+	bootDependency project(':seqAlign-js')
+}
+
+task packageWebApp(type: Jar) {
+	baseName 'seqAlign-web'
+	extension 'jar'
+	destinationDir file("${projectDir}/build_fatjar")
+
+//	from project(':seqAlign-js').projectDir {
+	from configurations.bootDependency.singleFile {
+		include "build*/*.jar"
+		into 'BOOT-INF/lib'
+	}
+}
+
+assemble.dependsOn packageWebApp
