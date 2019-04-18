@@ -16,11 +16,15 @@
 
 package com.bop.seqAlign.ws.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,22 +34,36 @@ import com.bop.seqAlign.framework.AlignmentDescriptor;
 import com.bop.seqAlign.framework.AlignmentType;
 import com.bop.seqAlign.framework.ScoringMatrix;
 import com.bop.seqAlign.ws.web.resource.AlignmentResource;
+import com.bop.seqAlign.ws.web.resource.ScoringMatrixesResource;
 
 /**
  * @author Marco Ruiz
  */
 @RestController
-@RequestMapping(value = "/api/align", produces = MediaTypes.HAL_JSON_VALUE)
-public class AlignmentSolutionController {	//extends BaseController {
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping(value = "/api", produces = MediaTypes.HAL_JSON_VALUE)
+public class AlignmentController {	//extends BaseController {
+
+	private static final Logger logger = LoggerFactory.getLogger(AlignmentController.class);
 	
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResourceSupport> create(@RequestBody AlignmentDescriptorDTO thingDTO) {
-		return createResponse(thingDTO);
+	@Autowired
+	private ScoringMatrixesResource scoringMatrixesResource;
+	
+	@GetMapping(value = "/matrixes")
+	public ResponseEntity<ResourceSupport> getMatrixes() {
+		logger.info("Received request to get list of scoring matrixes available");
+		return ResponseEntity.ok(scoringMatrixesResource);
+	}
+
+	@PostMapping(value = "/align", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResourceSupport> createAlignment(@RequestBody AlignmentDescriptorDTO descriptorDTO) {
+		return createResponse(descriptorDTO);
 	}
 
 	private ResponseEntity<ResourceSupport> createResponse(AlignmentDescriptor.Builder descriptorBuilder) {
-		return ResponseEntity.ok(new AlignmentResource(descriptorBuilder.build().createAlignment()));
+		AlignmentDescriptor descriptor = descriptorBuilder.build();
+		logger.info("Received request to perform a {} alignment", descriptor.getAlignmentType().getName());
+		return ResponseEntity.ok(new AlignmentResource(descriptor.createAlignment()));
 	}
 
 	@SuppressWarnings("unused")

@@ -16,7 +16,11 @@
 
 package com.bop.seqAlign.framework;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Generated;
 
@@ -2530,6 +2534,12 @@ public enum ScoringMatrix {
 		{-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, 1}
 	}));
 
+	public static final List<String> NAMES = Collections.unmodifiableList(
+			Stream.of(ScoringMatrix.values())
+					.map(ScoringMatrix::name)
+					.collect(Collectors.toList())
+	);
+	
 	private static SequenceMatrix<Integer> createData(String symbols, Integer[][] values) {
 		return new SequenceMatrix<>(symbols, symbols, values);
 	}
@@ -2549,6 +2559,14 @@ public enum ScoringMatrix {
     	if (data == null) 
     		data = dataFactory.get();
     	return data;
+    }
+    
+    public String removeInvalidSymbols(String target) {
+    	String validSymbols = getData().getSequenceA();
+    	return target.chars()
+    			.mapToObj(c -> Character.toString((char)c))
+    			.filter(validSymbols::contains)
+    			.collect(Collectors.joining());
     }
 
     public PairWiseScoringMatrix createPairWiseScoringMatrix(String seqA, String seqB) {

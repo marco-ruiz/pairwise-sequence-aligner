@@ -37,8 +37,8 @@ public class AlignmentDescriptor {
     private AlignmentDescriptor(String sequenceA, String sequenceB, ScoringMatrix scoreMatrix, 
 			AlignmentType alignmentType, int maxSolutions, int fixPenalty, int varPenalty, int minScore) {
     	
-		this.sequenceA = sequenceA;
-		this.sequenceB = sequenceB;
+		this.sequenceA = scoreMatrix.removeInvalidSymbols(sequenceA);
+		this.sequenceB = scoreMatrix.removeInvalidSymbols(sequenceB);
 		this.scoringMatrix = scoreMatrix;
 		this.alignmentType = alignmentType;
         this.maxNumberOfSolutions = maxSolutions;
@@ -46,7 +46,7 @@ public class AlignmentDescriptor {
 		this.varGapPenalty = varPenalty;
 		this.minScore = minScore;
 		
-		this.pairwiseScoreMatrix = scoringMatrix.createPairWiseScoringMatrix(sequenceA, sequenceB);
+		this.pairwiseScoreMatrix = scoringMatrix.createPairWiseScoringMatrix(this.sequenceA, this.sequenceB);
     }
 
 	public String getSequenceA() {
