@@ -4,6 +4,7 @@ import Header from './Header';
 import DescriptorForm from './DescriptorForm';
 import ItemsDashboard from './ItemsDashboard';
 import Solution from './Solution';
+import { apiRequestPost } from '../api-requests';
 
 const styles = {
     Paper: { 
@@ -21,27 +22,13 @@ const styles = {
 
 const solutionFields = [
     { name: 'score', caption: 'Score' },
-    { name: 'formattedEValue', caption: 'E-Value' },
+    { name: 'evalue', caption: 'E-Value', formatter: (value) => value.toExponential(1) },
     { name: 'positives', caption: 'Positives' },
-    { name: 'formattedPositivesPercentage', caption: '% Positives' },
+    { name: 'positivesPercentage', caption: '% Positives', formatter: (value) => value + "%" },
     { name: 'identities', caption: 'Identities' },
-    { name: 'formattedIdentitiesPercentage', caption: '% Identities' },
-    { name: 'length', caption: 'Length' },
+    { name: 'identitiesPercentage', caption: '% Identities', formatter: (value) => value + "%" },
+    { name: 'alignedSequences', caption: 'Length', formatter: (alignedSequences) => alignedSequences.length },
 ];
-
-const postRequest = async (url, body, responseConsumer) => {
-    const options = {
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-
-    const res = await fetch(url, options)
-    const json = await res.json();
-    responseConsumer(json);
-}
 
 export default class AppPage extends React.Component {
 
@@ -59,6 +46,7 @@ export default class AppPage extends React.Component {
                 minScore: 20,
                 maxNumberOfSolutions: 15,
             },
+            matrixes: this.props.matrixes,
             solutions: []
         };
     }
@@ -68,18 +56,11 @@ export default class AppPage extends React.Component {
     }
 
     processApiResponse = ({ descriptor, solutions}) => { 
-        solutions.forEach(sol => {
-            sol.formattedEValue = sol.evalue.toExponential(1);
-            sol.formattedPositivesPercentage = sol.positivesPercentage + "%";
-            sol.formattedIdentitiesPercentage = sol.identitiesPercentage + "%";
-            sol.length = sol.alignedSequences.length;
-        });
-
         this.setState(() => ({ descriptor, solutions }));
     }
 
     render() {
-        const definitionMode = (this.state.solutions === undefined || this.state.solutions.length === 0);
+        const definitionMode = (!this.state.solutions || !this.state.solutions.length);
         return definitionMode ? 
             <Fragment>
                 <Header title="Pairwise Sequence Aligner" />
@@ -87,7 +68,8 @@ export default class AppPage extends React.Component {
                     <Paper style={styles.Paper}>
                         <DescriptorForm
                             descriptor={this.state.descriptor}
-                            onSubmit={body => postRequest(this.props.apiUrl, body, this.processApiResponse)}
+                            matrixes={this.state.matrixes}
+                            onSubmit={body => apiRequestPost(this.props.alignUrl, body, this.processApiResponse)}
                         />
                     </Paper>
                 </div>

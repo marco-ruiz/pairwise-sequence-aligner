@@ -49,6 +49,16 @@ const descriptorFields = [
     { name: 'maxNumberOfSolutions', caption: 'Maximum Number of Solutions' },
 ];
 
+const solutionFields = [
+    { name: 'score', caption: 'Score' },
+    { name: 'evalue', caption: 'E-Value', formatter: (value) => value.toExponential(1) },
+    { name: 'positives', caption: 'Positives' },
+    { name: 'positivesPercentage', caption: '% Positives', formatter: (value) => <BarPercentage percentage={value} /> },
+    { name: 'identities', caption: 'Identities' },
+    { name: 'identitiesPercentage', caption: '% Identities', formatter: (value) => <BarPercentage percentage={value} /> },
+    { name: 'alignedSequences', caption: 'Length', formatter: (alignedSequences) => alignedSequences.length },
+];
+
 const hueLevel = 180;
 
 const BarPercentage = props => 
@@ -63,15 +73,10 @@ const BarPercentage = props =>
         </ColoredBar>
     </Fragment>;
 
-
 class Solution extends React.Component {
 
     render() {
-        const { classes, descriptor, fields, solution } = this.props;
-        
-        const scoresRecord = Object.assign({}, solution);
-        scoresRecord.formattedPositivesPercentage = <BarPercentage percentage={solution.positivesPercentage} />;
-        scoresRecord.formattedIdentitiesPercentage = <BarPercentage percentage={solution.identitiesPercentage} />;
+        const { classes, descriptor, solution } = this.props;
 
         return (
             <div className={classes.root}>
@@ -90,7 +95,7 @@ class Solution extends React.Component {
                         <Typography className={classes.secondaryHeading}></Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        <PairsPanel fields={fields} record={scoresRecord} />
+                        <PairsPanel fields={solutionFields} record={solution} />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
                 <ExpansionPanel expanded={true}>

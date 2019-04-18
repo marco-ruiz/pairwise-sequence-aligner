@@ -71,11 +71,12 @@ export default class DescriptorForm extends React.Component {
             margin="normal"
             variant="outlined"
             multiline
-            rows="2"
+            rows="3"
             fullWidth
         />
 
     render() {
+        const { matrixes } = this.props;
         return (
             <div style={styles.container}>
                 <Header title="Alignment Definition" buttonLabel="Align!" onClick={this.onSubmit}/>
@@ -103,10 +104,9 @@ export default class DescriptorForm extends React.Component {
                     fieldName='scoringMatrixName' 
                     onChange={e => this.onChangeField(e, 'scoringMatrixName')}
                 >
-                    <MenuItem value="BLOSUM100">BLOSUM100</MenuItem>
-                    <MenuItem value="BLOSUM50">BLOSUM50</MenuItem>
-                    <MenuItem value="BLOSUM62">BLOSUM62</MenuItem>
-                    <MenuItem value="PAM250">PAM250</MenuItem>
+                {matrixes.map((name, index) => 
+                    <MenuItem key={index} value={name}>{name}</MenuItem>
+                )}
                 </SelectControl>
 
                 {this.createNumericField("Gap Open Penalty", 'fixGapPenalty')}

@@ -1,10 +1,9 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 const styles = theme => ({
@@ -28,6 +27,11 @@ const styles = theme => ({
     },
 });
 
+const createFormattedValue = (field, record) => {
+    const rawValue = record[field.name];
+    return field.formatter ? field.formatter(rawValue) : rawValue;
+}
+
 class PairsPanel extends React.Component {
 
     render() {
@@ -42,7 +46,7 @@ class PairsPanel extends React.Component {
                             {field.caption + ": "}
                         </TableCell>
                         <TableCell className={classes.tableCell} width="100%" align="left">
-                            {record[field.name]}
+                            {createFormattedValue(field, record)}
                         </TableCell>
                     </TableRow>
                 )}

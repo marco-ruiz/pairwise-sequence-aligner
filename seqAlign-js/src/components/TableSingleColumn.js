@@ -22,6 +22,11 @@ const styles = theme => ({
     }
 });
 
+const createFormattedValue = (field, record) => {
+    const rawValue = record[field.name];
+    return field.formatter ? field.formatter(rawValue) : rawValue;
+}
+
 class TableSingleColumn extends React.Component {
 
     constructor(props) {
@@ -47,7 +52,7 @@ class TableSingleColumn extends React.Component {
     }
 
     render() {
-        const { classes, fields, listItems, onSelect, showHeader } = this.props;
+        const { classes, fields, listItems, showHeader } = this.props;
         const displayField = fields[this.state.displayedFieldIndex];
         const header = showHeader &&
             <Fragment>
@@ -73,7 +78,7 @@ class TableSingleColumn extends React.Component {
                             className={this.state.selectedRow === index ? classes.selectedRow : classes.row} 
                             hover 
                             onClick={() => this.selectItem(index)}>
-                            <TableCell align="right">{item[displayField.name]}</TableCell>
+                            <TableCell align="right">{createFormattedValue(displayField, item)}</TableCell>
                         </TableRow>
                     )}
                 </TableBody>
