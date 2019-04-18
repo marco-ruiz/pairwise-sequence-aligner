@@ -11,6 +11,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import FieldPresentation from '../field-presentation';
+
 const styles = theme => ({
     root: {
         display: 'flex',
@@ -21,11 +23,6 @@ const styles = theme => ({
         backgroundColor: "#eee",
     }
 });
-
-const createFormattedValue = (field, record) => {
-    const rawValue = record[field.name];
-    return field.formatter ? field.formatter(rawValue) : rawValue;
-}
 
 class TableSingleColumn extends React.Component {
 
@@ -39,7 +36,7 @@ class TableSingleColumn extends React.Component {
     }
 
     moveToDisplay = (fieldIndexOffset) => {
-        const len = this.props.fields.length;
+        const len = this.props.presentation.length;
         let displayedFieldIndex = this.state.displayedFieldIndex + fieldIndexOffset;
         if (displayedFieldIndex < 0) displayedFieldIndex = len - 1;
         if (displayedFieldIndex > len - 1) displayedFieldIndex = 0;
@@ -52,8 +49,8 @@ class TableSingleColumn extends React.Component {
     }
 
     render() {
-        const { classes, fields, listItems, showHeader } = this.props;
-        const displayField = fields[this.state.displayedFieldIndex];
+        const { classes, presentation, listItems, showHeader } = this.props;
+        const displayField = presentation[this.state.displayedFieldIndex];
         const header = showHeader &&
             <Fragment>
                 <TableCell className={classes.header} align="center">
@@ -78,7 +75,7 @@ class TableSingleColumn extends React.Component {
                             className={this.state.selectedRow === index ? classes.selectedRow : classes.row} 
                             hover 
                             onClick={() => this.selectItem(index)}>
-                            <TableCell align="right">{createFormattedValue(displayField, item)}</TableCell>
+                            <TableCell align="right">{displayField.extractValue(item)}</TableCell>
                         </TableRow>
                     )}
                 </TableBody>
@@ -89,6 +86,9 @@ class TableSingleColumn extends React.Component {
 
 TableSingleColumn.propTypes = {
     classes: PropTypes.object.isRequired,
+    presentation: PropTypes.arrayOf(
+        PropTypes.instanceOf(FieldPresentation)
+    ),
 };
 
 export default withStyles(styles)(TableSingleColumn);

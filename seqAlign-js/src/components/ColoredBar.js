@@ -1,12 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import { FormHelperText } from '@material-ui/core';
 
 const styles = {
     verticalContainer: {
@@ -15,6 +9,15 @@ const styles = {
         display: "flex",
     },
 }
+
+export const PercentageBar = props =>
+    <StyleColoredBar
+        toValue={props.percentage}
+        color={`rgba(${props.hueLevel}, 0, 0, 0.5)`}
+        backgroundColor={`rgba(${props.hueLevel}, ${props.hueLevel}, ${props.hueLevel}, 0.5)`}
+        {...props} >
+        {props.percentage}%
+    </StyleColoredBar>
 
 class ColoredBar extends React.Component {
 
@@ -63,6 +66,8 @@ ColoredBar.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ColoredBar);
+const StyleColoredBar = withStyles(styles)(ColoredBar);
+
+export default StyleColoredBar;
 
 

@@ -9,7 +9,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import PairsPanel from './PairsPanel';
 import SolutionAlignment from './SolutionAlignment';
-import ColoredBar from './ColoredBar';
+import ColoredBar, { PercentageBar } from './ColoredBar';
+import FieldPresentation from '../field-presentation';
+
+const hueLevel = 180;
 
 const styles = theme => ({
     root: {
@@ -38,40 +41,30 @@ const styles = theme => ({
     }
 });
 
-const descriptorFields = [
-    { name: 'sequenceA', caption: 'First Sequence' },
-    { name: 'sequenceB', caption: 'Second Sequence' },
-    { name: 'alignmentType', caption: 'Alignment Type' },
-    { name: 'scoringMatrixName', caption: 'Scoring Matrix' },
-    { name: 'fixGapPenalty', caption: 'Open Gap Penalty' },
-    { name: 'varGapPenalty', caption: 'Extension Gap Penalty' },
-    { name: 'minScore', caption: 'Minimum Score' },
-    { name: 'maxNumberOfSolutions', caption: 'Maximum Number of Solutions' },
+const parametersPresentation = [
+    new FieldPresentation('First Sequence', 'sequenceA'),
+    new FieldPresentation('Second Sequence', 'sequenceB'),
+    new FieldPresentation('Alignment Type', 'alignmentType'),
+    new FieldPresentation('Scoring Matrix', 'scoringMatrixName'),
+    new FieldPresentation('Open Gap Penalty', 'fixGapPenalty'),
+    new FieldPresentation('Extension Gap Penalty', 'varGapPenalty'),
+    new FieldPresentation('Minimum Score', 'minScore'),
+    new FieldPresentation('Maximum Number of Solutions', 'maxNumberOfSolutions'),
 ];
 
-const solutionFields = [
-    { name: 'score', caption: 'Score' },
-    { name: 'evalue', caption: 'E-Value', formatter: (value) => value.toExponential(1) },
-    { name: 'positives', caption: 'Positives' },
-    { name: 'positivesPercentage', caption: '% Positives', formatter: (value) => <BarPercentage percentage={value} /> },
-    { name: 'identities', caption: 'Identities' },
-    { name: 'identitiesPercentage', caption: '% Identities', formatter: (value) => <BarPercentage percentage={value} /> },
-    { name: 'alignedSequences', caption: 'Length', formatter: (alignedSequences) => alignedSequences.length },
+export const solutionPresentation = (percentageValueFormatter) => [
+    new FieldPresentation('Score', 'score'),
+    new FieldPresentation('E-Value', 'score', value => value.toExponential(1)),
+    new FieldPresentation('Positives', 'positives'),
+    new FieldPresentation('% Positives', 'positivesPercentage', percentageValueFormatter),
+    new FieldPresentation('Identities', 'identities'),
+    new FieldPresentation('% Identities', 'identitiesPercentage', percentageValueFormatter),
+    new FieldPresentation('Length', '', sol => sol.alignedSequences.length),
 ];
 
-const hueLevel = 180;
-
-const BarPercentage = props => 
-    <Fragment>
-        <ColoredBar
-            horizontalBar
-            toValue={props.percentage}
-            color={`rgba(${hueLevel}, 0, 0, 0.5)`}
-            backgroundColor={`rgba(${hueLevel}, ${hueLevel}, ${hueLevel}, 0.5)`}
-            size={200} >
-            {props.percentage}%
-        </ColoredBar>
-    </Fragment>;
+const visualSolutionPresentation = solutionPresentation(value => 
+    <PercentageBar percentage={value} hueLevel={hueLevel} horizontalBar size={200}/>
+);
 
 class Solution extends React.Component {
 
@@ -86,7 +79,7 @@ class Solution extends React.Component {
                         <Typography className={classes.secondaryHeading}>Parameters used to compute this solution</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        <PairsPanel fields={descriptorFields} record={descriptor} />
+                        <PairsPanel presentation={parametersPresentation} record={descriptor} />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
                 <ExpansionPanel>
@@ -95,7 +88,7 @@ class Solution extends React.Component {
                         <Typography className={classes.secondaryHeading}></Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        <PairsPanel fields={solutionFields} record={solution} />
+                        <PairsPanel presentation={visualSolutionPresentation} record={solution} />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
                 <ExpansionPanel expanded={true}>

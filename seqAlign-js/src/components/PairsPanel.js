@@ -5,6 +5,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import FieldPresentation from '../field-presentation';
 
 const styles = theme => ({
     root: {
@@ -27,26 +28,21 @@ const styles = theme => ({
     },
 });
 
-const createFormattedValue = (field, record) => {
-    const rawValue = record[field.name];
-    return field.formatter ? field.formatter(rawValue) : rawValue;
-}
-
 class PairsPanel extends React.Component {
 
     render() {
-        const { classes, fields, record } = this.props;
+        const { classes, presentation, record } = this.props;
 
         return (
             <Table>
                 <TableBody>
-                {fields.map((field, index) => 
-                    <TableRow className={classes.tableRow} key={index}>
+                {presentation.map((field, index) => 
+                    <TableRow key={index} className={classes.tableRow}>
                         <TableCell className={classes.tableCell} align="right">
                             {field.caption + ": "}
                         </TableCell>
                         <TableCell className={classes.tableCell} width="100%" align="left">
-                            {createFormattedValue(field, record)}
+                            {field.extractValue(record)}
                         </TableCell>
                     </TableRow>
                 )}
@@ -58,6 +54,9 @@ class PairsPanel extends React.Component {
 
 PairsPanel.propTypes = {
     classes: PropTypes.object.isRequired,
+    presentation: PropTypes.arrayOf(
+        PropTypes.instanceOf(FieldPresentation)
+    ),
 };
 
 export default withStyles(styles)(PairsPanel);

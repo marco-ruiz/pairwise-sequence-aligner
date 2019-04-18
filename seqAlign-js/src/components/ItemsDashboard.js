@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -13,6 +13,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import TableSingleColumn from './TableSingleColumn'
+import FieldPresentation from '../field-presentation';
 
 const drawerWidth = 200;
 
@@ -94,7 +95,7 @@ class ItemsDashboard extends React.Component {
     }
 
     render() {
-        const { classes, title, fields, listItems, onRestart, detailsFactory } = this.props;
+        const { classes, title, presentation, listItems, onRestart, detailsFactory } = this.props;
 
         const menuIcon = 
             <IconButton
@@ -137,8 +138,7 @@ class ItemsDashboard extends React.Component {
                     </div>
                     <Divider />
                     <TableSingleColumn 
-                        classes={classes}
-                        fields={fields}
+                        presentation={presentation}
                         listItems={listItems}
                         displayedFieldIndex={0}
                         onSelect={this.selectItem}
@@ -148,7 +148,7 @@ class ItemsDashboard extends React.Component {
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
-                    {detailsFactory(fields, listItems[this.state.selectedItemIndex])}
+                    {detailsFactory(listItems[this.state.selectedItemIndex])}
                 </main>
             </div>
         );
@@ -157,6 +157,9 @@ class ItemsDashboard extends React.Component {
 
 ItemsDashboard.propTypes = {
     classes: PropTypes.object.isRequired,
+    presentation: PropTypes.arrayOf(
+        PropTypes.instanceOf(FieldPresentation)
+    ),
 };
 
 export default withStyles(styles)(ItemsDashboard);

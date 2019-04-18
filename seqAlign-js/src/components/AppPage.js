@@ -3,8 +3,9 @@ import Paper from '@material-ui/core/Paper';
 import Header from './Header';
 import DescriptorForm from './DescriptorForm';
 import ItemsDashboard from './ItemsDashboard';
-import Solution from './Solution';
+import Solution, { solutionPresentation } from './Solution';
 import { apiRequestPost } from '../api-requests';
+import FieldPresentation from '../field-presentation';
 
 const styles = {
     Paper: { 
@@ -20,15 +21,7 @@ const styles = {
     }
 }
 
-const solutionFields = [
-    { name: 'score', caption: 'Score' },
-    { name: 'evalue', caption: 'E-Value', formatter: (value) => value.toExponential(1) },
-    { name: 'positives', caption: 'Positives' },
-    { name: 'positivesPercentage', caption: '% Positives', formatter: (value) => value + "%" },
-    { name: 'identities', caption: 'Identities' },
-    { name: 'identitiesPercentage', caption: '% Identities', formatter: (value) => value + "%" },
-    { name: 'alignedSequences', caption: 'Length', formatter: (alignedSequences) => alignedSequences.length },
-];
+const presentation = solutionPresentation(value => value + "%");
 
 export default class AppPage extends React.Component {
 
@@ -77,11 +70,11 @@ export default class AppPage extends React.Component {
             :
             <ItemsDashboard
                 title="Pairwise Sequence Aligner" 
-                fields={solutionFields}
+                presentation={presentation}
                 listItems={this.state.solutions}
                 onRestart={this.onRestart}
-                detailsFactory={(f, item) => 
-                    <Solution descriptor={this.state.descriptor} fields={f} solution={item} />
+                detailsFactory={item => 
+                    <Solution descriptor={this.state.descriptor} solution={item} />
                 }
             />
     };
