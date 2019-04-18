@@ -16,7 +16,7 @@ out
 # other generated files
 bin/
 gen/
-build/
+build*/
 target/
 .README.md.html
 src/generated
@@ -34,11 +34,17 @@ local.properties
 
 # Android Studio
 *.iml
+*.ipr
+*.iws
 .idea
 .gradle/
 
 #NDK
 obj/
 
-
 tmp/
+
+# Javascript
+node_modules/
+public/dist/
+.env*.local
