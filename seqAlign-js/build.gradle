@@ -37,6 +37,10 @@ npm_run_build {
     inputs.file 'package-lock.json'
 
     outputs.dir 'build'
+	
+	environment = [
+		'CI': 'false'
+	]
 }
 
 // pack output of the build into JAR file
