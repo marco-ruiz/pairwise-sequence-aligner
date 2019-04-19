@@ -5,7 +5,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import FieldPresentation from '../field-presentation';
+import PropertyPresentation from '../property-presentation';
 
 const styles = theme => ({
     root: {
@@ -28,7 +28,7 @@ const styles = theme => ({
     },
 });
 
-class PairsPanel extends React.Component {
+class PresentationPairs extends React.Component {
 
     render() {
         const { classes, presentation, record } = this.props;
@@ -52,11 +52,11 @@ class PairsPanel extends React.Component {
     }
 }
 
-PairsPanel.propTypes = {
+PresentationPairs.propTypes = {
     classes: PropTypes.object.isRequired,
     presentation: PropTypes.arrayOf(
-        PropTypes.instanceOf(FieldPresentation)
+        PropTypes.instanceOf(PropertyPresentation)
     ),
 };
 
-export default withStyles(styles)(PairsPanel);
+export default withStyles(styles)(PresentationPairs);

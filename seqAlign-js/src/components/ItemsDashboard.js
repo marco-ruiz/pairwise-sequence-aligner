@@ -12,8 +12,8 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
-import TableSingleColumn from './TableSingleColumn'
-import FieldPresentation from '../field-presentation';
+import PresentationsColumn from './PresentationsColumn'
+import PropertyPresentation from '../property-presentation';
 
 const drawerWidth = 200;
 
@@ -137,7 +137,7 @@ class ItemsDashboard extends React.Component {
                         </IconButton>
                     </div>
                     <Divider />
-                    <TableSingleColumn 
+                    <PresentationsColumn 
                         presentation={presentation}
                         listItems={listItems}
                         displayedFieldIndex={0}
@@ -158,7 +158,7 @@ class ItemsDashboard extends React.Component {
 ItemsDashboard.propTypes = {
     classes: PropTypes.object.isRequired,
     presentation: PropTypes.arrayOf(
-        PropTypes.instanceOf(FieldPresentation)
+        PropTypes.instanceOf(PropertyPresentation)
     ),
 };
 

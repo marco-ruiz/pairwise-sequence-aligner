@@ -2,16 +2,13 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import FieldPresentation from '../field-presentation';
+import PropertyPresentation from '../property-presentation';
 
 const styles = theme => ({
     root: {
@@ -24,24 +21,11 @@ const styles = theme => ({
     }
 });
 
-class TableSingleColumn extends React.Component {
+class PresentationsTable extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            displayedFieldIndex: this.props.displayedFieldIndex,
-            selectedRow: 0,
-        };
-    }
-
-    moveToDisplay = (fieldIndexOffset) => {
-        const len = this.props.presentation.length;
-        let displayedFieldIndex = this.state.displayedFieldIndex + fieldIndexOffset;
-        if (displayedFieldIndex < 0) displayedFieldIndex = len - 1;
-        if (displayedFieldIndex > len - 1) displayedFieldIndex = 0;
-        this.setState({ displayedFieldIndex });
-    }
+    state = {
+        selectedRow: 0,
+    };
 
     selectItem = (selectedRow) => {
         this.setState({ selectedRow });
@@ -50,18 +34,13 @@ class TableSingleColumn extends React.Component {
 
     render() {
         const { classes, presentation, listItems, showHeader } = this.props;
-        const displayField = presentation[this.state.displayedFieldIndex];
         const header = showHeader &&
             <Fragment>
-                <TableCell className={classes.header} align="center">
-                    <IconButton onClick={() => this.moveToDisplay(-1)}>
-                        <ChevronLeftIcon />
-                    </IconButton>
+            {presentation.map((displayField, index) =>
+                <TableCell key={index} className={classes.header} align="center">
                     {displayField.caption}
-                    <IconButton onClick={() => this.moveToDisplay(1)}>
-                        <ChevronRightIcon />
-                    </IconButton>
                 </TableCell>
+            )}
             </Fragment>
 
         return (
@@ -75,7 +54,9 @@ class TableSingleColumn extends React.Component {
                             className={this.state.selectedRow === index ? classes.selectedRow : classes.row} 
                             hover 
                             onClick={() => this.selectItem(index)}>
-                            <TableCell align="right">{displayField.extractValue(item)}</TableCell>
+                            {presentation.map((displayField, cellIndex) =>
+                                <TableCell key={cellIndex} align="right">{displayField.extractValue(item)}</TableCell>
+                            )}
                         </TableRow>
                     )}
                 </TableBody>
@@ -84,11 +65,11 @@ class TableSingleColumn extends React.Component {
     }
 }
 
-TableSingleColumn.propTypes = {
+PresentationsTable.propTypes = {
     classes: PropTypes.object.isRequired,
     presentation: PropTypes.arrayOf(
-        PropTypes.instanceOf(FieldPresentation)
+        PropTypes.instanceOf(PropertyPresentation)
     ),
 };
 
-export default withStyles(styles)(TableSingleColumn);
+export default withStyles(styles)(PresentationsTable);

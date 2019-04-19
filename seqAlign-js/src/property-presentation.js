@@ -1,5 +1,5 @@
 
-export default class FieldPresentation {
+export default class PropertyPresentation {
 
     constructor(fieldCaption, fieldName, fieldValueFormatter = (value) => value) {
         this.caption = fieldCaption;
@@ -10,5 +10,9 @@ export default class FieldPresentation {
     extractValue(target) {
         const rawValue = this.name ? target[this.name] : target;
         return this.formatter(rawValue);
+    }
+
+    clone(newValues) {
+        return Object.assign(new PropertyPresentation(), this, newValues);
     }
 }

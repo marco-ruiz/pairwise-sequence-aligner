@@ -5,7 +5,6 @@ import DescriptorForm from './DescriptorForm';
 import ItemsDashboard from './ItemsDashboard';
 import Solution, { solutionPresentation } from './Solution';
 import { apiRequestPost } from '../api-requests';
-import FieldPresentation from '../field-presentation';
 
 const styles = {
     Paper: { 
