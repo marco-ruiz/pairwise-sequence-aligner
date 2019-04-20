@@ -19,47 +19,45 @@ export const PercentageBar = props =>
         {props.percentage}%
     </StyleColoredBar>
 
-class ColoredBar extends React.Component {
+const barStylesGenerator = (propSize, valuesRangeSize, colors) => 
+    (...boundaries) => 
+        colors.map((backgroundColor, index) => {
+            const toValue = boundaries[index + 1];
+            const fromValue = boundaries[index];
+            const percent = 100 * Math.abs(toValue - fromValue) / valuesRangeSize;
+            const barStyle = { backgroundColor };
+            barStyle[propSize] = percent + "%";
+            return barStyle;
+        });
 
-    createBarStyle = (propSize, fromVal, toVal, valuesRangeSize, backgroundColor) => {
-        const percent = 100 * Math.abs(toVal - fromVal) / valuesRangeSize;
-        const barStyle = { backgroundColor };
-        barStyle[propSize] = percent + "%";
-//        barStyle.paddingTop = "100%";
-        return barStyle;
-    }
+const ColoredBar = ({ classes, children, horizontalBar, size, 
+                        fromValue = 0, toValue = 0, 
+                        minValue = 0, maxValue = 100, 
+                        color = '#f00', backgroundColor }) => {
 
-    render() {
-        let { classes, children, horizontalBar, size, 
-                fromValue = 0, toValue = 0, 
-                minValue = 0, maxValue = 100, 
-                color = '#f00', backgroundColor } = this.props;
+    const valuesRangeSize = maxValue - minValue;
+    const propSize = (horizontalBar) ? 'width' : 'height';
+    const styleGenerator = barStylesGenerator(propSize, valuesRangeSize, [backgroundColor, color, backgroundColor]);
 
-        const valuesRangeSize = maxValue - minValue;
-        const propSize = (horizontalBar) ? 'width' : 'height';
+    if (fromValue > toValue) 
+        [toValue, fromValue] = [fromValue, toValue];
 
-        if (fromValue > toValue) 
-            [toValue, fromValue] = [fromValue, toValue];
+    if (fromValue < minValue) fromValue = minValue;
+    if (toValue > maxValue) toValue = maxValue;
 
-        if (fromValue < minValue) fromValue = minValue;
-        if (toValue > maxValue) toValue = maxValue;
+    const [lowerBarStyle, barStyle, higherBarStyle] = styleGenerator(minValue, fromValue, toValue, maxValue);
 
-        const lowerBarStyle = this.createBarStyle(propSize, minValue, fromValue, valuesRangeSize, backgroundColor);
-        const barStyle = this.createBarStyle(propSize, fromValue, toValue, valuesRangeSize, color);
-        const higherBarStyle = this.createBarStyle(propSize, toValue, maxValue, valuesRangeSize, backgroundColor);
-
-        return (
-            <div className={horizontalBar ? classes.horizontalContainer : classes.verticalContainer} style={{ [propSize]: size }}>
-                {!horizontalBar && children}
-                &nbsp;
-                <div style={horizontalBar ? lowerBarStyle : higherBarStyle}></div>
-                <div style={barStyle}></div>
-                <div style={horizontalBar ? higherBarStyle : lowerBarStyle}></div>
-                &nbsp;
-                {horizontalBar && children}
-            </div>
-        );
-    };
+    return (
+        <div className={horizontalBar ? classes.horizontalContainer : classes.verticalContainer} style={{ [propSize]: size }}>
+            {!horizontalBar && children}
+            &nbsp;
+            <div style={horizontalBar ? lowerBarStyle : higherBarStyle}></div>
+            <div style={barStyle}></div>
+            <div style={horizontalBar ? higherBarStyle : lowerBarStyle}></div>
+            &nbsp;
+            {horizontalBar && children}
+        </div>
+    );
 }
 
 ColoredBar.propTypes = {

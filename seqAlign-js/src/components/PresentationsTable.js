@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -21,48 +21,41 @@ const styles = theme => ({
     }
 });
 
-class PresentationsTable extends React.Component {
-
-    state = {
-        selectedRow: 0,
-    };
-
-    selectItem = (selectedRow) => {
-        this.setState({ selectedRow });
-        this.props.onSelect(selectedRow);
+const PresentationsTable = ({ classes, presentations, listItems, showHeader, onSelect }) => {
+    const [selectedRow, setSelectedRow] = useState(0);
+    const selectItem = (selectedIndex) => {
+        setSelectedRow(selectedIndex);
+        onSelect(selectedIndex);
     }
-
-    render() {
-        const { classes, presentation, listItems, showHeader } = this.props;
-        const header = showHeader &&
-            <Fragment>
-            {presentation.map((displayField, index) =>
+    
+    const header = showHeader &&
+        <Fragment>
+            {presentations.map((presentation, index) =>
                 <TableCell key={index} className={classes.header} align="center">
-                    {displayField.caption}
+                    {presentation.caption}
                 </TableCell>
             )}
-            </Fragment>
+        </Fragment>
 
-        return (
-            <Table className={classes.table}>
-                <TableHead>
-                    <TableRow>{header}</TableRow>
-                </TableHead>
-                <TableBody>
-                    {listItems.map((item, index) =>
-                        <TableRow key={index} 
-                            className={this.state.selectedRow === index ? classes.selectedRow : classes.row} 
-                            hover 
-                            onClick={() => this.selectItem(index)}>
-                            {presentation.map((displayField, cellIndex) =>
-                                <TableCell key={cellIndex} align="right">{displayField.extractValue(item)}</TableCell>
-                            )}
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        );
-    }
+    return (
+        <Table className={classes.table}>
+            <TableHead>
+                <TableRow>{header}</TableRow>
+            </TableHead>
+            <TableBody>
+                {listItems.map((item, index) =>
+                    <TableRow key={index}
+                        className={selectedRow === index ? classes.selectedRow : classes.row}
+                        hover
+                        onClick={() => selectItem(index)}>
+                        {presentations.map((presentation, cellIndex) =>
+                            <TableCell key={cellIndex} align="right">{presentation.extractValue(item)}</TableCell>
+                        )}
+                    </TableRow>
+                )}
+            </TableBody>
+        </Table>
+    );
 }
 
 PresentationsTable.propTypes = {

@@ -1,12 +1,11 @@
 import React from 'react';
 
-const computeIndex = (items, currentIndex, indexOffset) => {
-    const len = items.length;
-    const trueIndexOffset = indexOffset % len;
-    let selectedIndex = currentIndex + trueIndexOffset;
-    if (selectedIndex < 0) selectedIndex += len;
-    if (selectedIndex > len - 1) selectedIndex -= len;
-    return selectedIndex;
+const computeCircularDisplacement = (max, current, offset) => {
+    const trueIndexOffset = offset % max;
+    let result = current + trueIndexOffset;
+    if (result < 0) result += max;
+    if (result > max - 1) result -= max;
+    return result;
 }
 
 export const withSingleChild = (WrappedComponent) => {
@@ -21,7 +20,9 @@ export const withSingleChild = (WrappedComponent) => {
         }
 
         moveToSelect = (indexOffset) => {
-            this.setState({ selectedIndex: computeIndex(this.state.presentation, this.state.selectedIndex, indexOffset), });
+            this.setState({ 
+                selectedIndex: computeCircularDisplacement(this.state.presentation.length, this.state.selectedIndex, indexOffset), 
+            });
         }
 
         render() {

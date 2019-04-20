@@ -3,7 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import Header from './Header';
 import DescriptorForm from './DescriptorForm';
 import ItemsDashboard from './ItemsDashboard';
-import Solution, { solutionPresentation } from './Solution';
+import Solution, { solutionPresentations } from './Solution';
 import { apiRequestPost } from '../api-requests';
 
 const styles = {
@@ -20,7 +20,7 @@ const styles = {
     }
 }
 
-const presentation = solutionPresentation(value => value + "%");
+const presentations = solutionPresentations(value => value + "%");
 
 export default class AppPage extends React.Component {
 
@@ -69,7 +69,7 @@ export default class AppPage extends React.Component {
             :
             <ItemsDashboard
                 title="Pairwise Sequence Aligner" 
-                presentation={presentation}
+                presentations={presentations}
                 listItems={this.state.solutions}
                 onRestart={this.onRestart}
                 detailsFactory={item => 

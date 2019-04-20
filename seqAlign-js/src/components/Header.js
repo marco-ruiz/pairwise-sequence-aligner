@@ -16,13 +16,13 @@ const styles = {
     }
 };
 
-const Header = (props) => 
-    <AppBar position="static" className={props.classes.root}>
+const Header = ({ classes, title, buttonLabel, onClick }) => 
+    <AppBar position="static" className={classes.root}>
         <Toolbar>
-            <Typography variant="h6" color="inherit" className={props.classes.grow}>
-                {props.title}
+            <Typography variant="h6" color="inherit" className={classes.grow}>
+                {title}
             </Typography>
-            {props.buttonLabel && <Button color="inherit" onClick={props.onClick}>{props.buttonLabel}</Button>}
+            {buttonLabel && <Button color="inherit" onClick={onClick}>{buttonLabel}</Button>}
         </Toolbar>
     </AppBar>
 

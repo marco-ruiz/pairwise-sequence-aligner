@@ -52,7 +52,7 @@ const parametersPresentation = [
     new PropertyPresentation('Maximum Number of Solutions', 'maxNumberOfSolutions'),
 ];
 
-export const solutionPresentation = (percentageValueFormatter) => [
+export const solutionPresentations = (percentageValueFormatter) => [
     new PropertyPresentation('Score', 'score'),
     new PropertyPresentation('E-Value', 'score', value => value.toExponential(1)),
     new PropertyPresentation('Positives', 'positives'),
@@ -62,48 +62,40 @@ export const solutionPresentation = (percentageValueFormatter) => [
     new PropertyPresentation('Length', '', sol => sol.alignedSequences.length),
 ];
 
-const visualSolutionPresentation = solutionPresentation(value => 
+const visualSolutionPresentation = solutionPresentations(value => 
     <PercentageBar percentage={value} hueLevel={hueLevel} horizontalBar size={200}/>
 );
 
-class Solution extends React.Component {
-
-    render() {
-        const { classes, descriptor, solution } = this.props;
-
-        return (
-            <div className={classes.root}>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className={classes.heading}>Parameters</Typography>
-                        <Typography className={classes.secondaryHeading}>Parameters used to compute this solution</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <PresentationPairs presentation={parametersPresentation} record={descriptor} />
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className={classes.heading}>Scoring Values</Typography>
-                        <Typography className={classes.secondaryHeading}></Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <PresentationPairs presentation={visualSolutionPresentation} record={solution} />
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel expanded={true}>
-                    <ExpansionPanelSummary>
-                        <Typography className={classes.heading}>Solution Alignment</Typography>
-                        <Typography className={classes.secondaryHeading}></Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <SolutionAlignment hueLevel={hueLevel} solution={solution} />
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-            </div>
-        );
-    };
-}
+const Solution = ({ classes, descriptor, solution }) => 
+    <div className={classes.root}>
+        <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={classes.heading}>Parameters</Typography>
+                <Typography className={classes.secondaryHeading}>Parameters used to compute this solution</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+                <PresentationPairs presentation={parametersPresentation} record={descriptor} />
+            </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={classes.heading}>Scoring Values</Typography>
+                <Typography className={classes.secondaryHeading}></Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+                <PresentationPairs presentation={visualSolutionPresentation} record={solution} />
+            </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel expanded={true}>
+            <ExpansionPanelSummary>
+                <Typography className={classes.heading}>Solution Alignment</Typography>
+                <Typography className={classes.secondaryHeading}></Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+                <SolutionAlignment hueLevel={hueLevel} solution={solution} />
+            </ExpansionPanelDetails>
+        </ExpansionPanel>
+    </div>
 
 Solution.propTypes = {
     classes: PropTypes.object.isRequired,

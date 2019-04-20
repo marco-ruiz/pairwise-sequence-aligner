@@ -25,25 +25,21 @@ const styles = {
     },
 }
 
-class SolutionAlignment extends React.Component {
+const createAffixedArray = (sourceArray, affixValue, affixSize) => {
+    const affixValues = Array(affixSize).fill(affixValue);
+    return affixValues.concat(sourceArray, affixValues)
+}
 
-    createLevelsArray = alignedSequences => {
-        const affixLevels = Array(alignedSequences.affixLength).fill(0);
-        return affixLevels.concat(alignedSequences.scoreContributionLevels, affixLevels)
-    }
+const createRGBA = (hueLevel, level) => {
+    const alpha = Math.abs(level * 0.5);
+    const rgb = (level > 0) ? hueLevel + ", 0, 0" : "0, 0, " + hueLevel;
+    return 'rgba(' + rgb + ', ' + alpha + ')';
+}
 
-    createRGBA = (level) => {
-        const alpha = Math.abs(level * 0.5);
-        const rgb = (level > 0) ? this.props.hueLevel + ", 0, 0" : "0, 0, " + this.props.hueLevel;
-        return 'rgba(' + rgb + ', ' + alpha + ')';
-    }
-
-    render() {
-        const { classes } = this.props;
-        const { alignedSequences } = this.props.solution;
-        const { formattedAlignedA, formattedAlignment, formattedAlignedB } = alignedSequences;
-        const levels = this.createLevelsArray(alignedSequences);
-        const rgbas = levels.map(level => this.createRGBA(level));
+const SolutionAlignment = ({ classes, hueLevel, solution: { alignedSequences } }) => {
+        const sequences = ['formattedAlignedA', 'formattedAlignment', 'formattedAlignedB'].map(key => alignedSequences[key]);
+        const levels = createAffixedArray(alignedSequences.scoreContributionLevels, 0, alignedSequences.affixLength);
+        const rgbas = levels.map(level => createRGBA(hueLevel, level));
 
         return (
             <Table className={classes.table}>
@@ -61,7 +57,7 @@ class SolutionAlignment extends React.Component {
                         </TableCell>
                     )}
                     </TableRow>
-                {[formattedAlignedA, formattedAlignment, formattedAlignedB].map((seq, seqIndex) =>
+                {sequences.map((seq, seqIndex) =>
                     <TableRow key={seqIndex} className={classes.tableRow}>
                         {seq.split("").map((symbol, index) =>
                             <TableCell key={index} className={classes.tableCell} style={{ backgroundColor: rgbas[index] }}>
@@ -73,7 +69,6 @@ class SolutionAlignment extends React.Component {
                 </TableBody>
             </Table>
         );
-    };
 }
 
 SolutionAlignment.propTypes = {

@@ -95,7 +95,7 @@ class ItemsDashboard extends React.Component {
     }
 
     render() {
-        const { classes, title, presentation, listItems, onRestart, detailsFactory } = this.props;
+        const { classes, title, presentations, listItems, onRestart, detailsFactory } = this.props;
 
         const menuIcon = 
             <IconButton
@@ -138,9 +138,9 @@ class ItemsDashboard extends React.Component {
                     </div>
                     <Divider />
                     <PresentationsColumn 
-                        presentation={presentation}
+                        presentations={presentations}
                         listItems={listItems}
-                        displayedFieldIndex={0}
+                        selectedIndex={0}
                         onSelect={this.selectItem}
                         showHeader={this.state.drawerVisibility}
                     />
@@ -157,7 +157,7 @@ class ItemsDashboard extends React.Component {
 
 ItemsDashboard.propTypes = {
     classes: PropTypes.object.isRequired,
-    presentation: PropTypes.arrayOf(
+    presentations: PropTypes.arrayOf(
         PropTypes.instanceOf(PropertyPresentation)
     ),
 };
