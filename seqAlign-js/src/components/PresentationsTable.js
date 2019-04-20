@@ -8,6 +8,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import CarouselCaption, { useCarousel } from './CarouselCaption';
 import PropertyPresentation from '../property-presentation';
 
 const styles = theme => ({
@@ -65,4 +66,25 @@ PresentationsTable.propTypes = {
     ),
 };
 
-export default withStyles(styles)(PresentationsTable);
+const StyledPresentationsTable = withStyles(styles)(PresentationsTable);
+
+export default StyledPresentationsTable;
+
+export const PresentationsColumn = (props) => {
+    const { presentations, initialIndex } = props;
+    const [selectedIndex, offsetter] = useCarousel(presentations.length, initialIndex);
+    const [newPresentations] = useState(() =>
+        presentations.map((presentation, index) =>
+            presentation.clone({ caption: <CarouselCaption key={index} onMove={offsetter}>{presentation.caption}</CarouselCaption> })
+        )
+    );
+    return (
+        <StyledPresentationsTable {...props} presentations={Array.of(newPresentations[selectedIndex])} />
+    );
+}
+
+PresentationsColumn.propTypes = {
+    presentation: PropTypes.arrayOf(
+        PropTypes.instanceOf(PropertyPresentation)
+    ),
+};

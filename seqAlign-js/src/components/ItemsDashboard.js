@@ -12,7 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
-import PresentationsColumn from './PresentationsColumn'
+import { PresentationsColumn } from './PresentationsTable'
 import PropertyPresentation from '../property-presentation';
 
 const drawerWidth = 200;
@@ -140,7 +140,7 @@ class ItemsDashboard extends React.Component {
                     <PresentationsColumn 
                         presentations={presentations}
                         listItems={listItems}
-                        selectedIndex={0}
+                        initialIndex={0}
                         onSelect={this.selectItem}
                         showHeader={this.state.drawerVisibility}
                     />
