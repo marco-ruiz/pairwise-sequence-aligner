@@ -30,13 +30,14 @@ const barStylesGenerator = (propSize, valuesRangeSize, colors) =>
             return barStyle;
         });
 
-const ColoredBar = ({ classes, children, horizontalBar, size, 
+const ColoredBar = ({ classes, colored = true, children, horizontalBar, size, 
                         fromValue = 0, toValue = 0, 
                         minValue = 0, maxValue = 100, 
                         color = '#f00', backgroundColor }) => {
 
     const valuesRangeSize = maxValue - minValue;
     const propSize = (horizontalBar) ? 'width' : 'height';
+    if (!colored) color = backgroundColor;
     const styleGenerator = barStylesGenerator(propSize, valuesRangeSize, [backgroundColor, color, backgroundColor]);
 
     if (fromValue > toValue) 

@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+
 import Typography from '@material-ui/core/Typography';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -66,36 +69,46 @@ const visualSolutionPresentation = solutionPresentations(value =>
     <PercentageBar percentage={value} hueLevel={hueLevel} horizontalBar size={200}/>
 );
 
-const Solution = ({ classes, descriptor, solution }) => 
-    <div className={classes.root}>
-        <ExpansionPanel>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.heading}>Parameters</Typography>
-                <Typography className={classes.secondaryHeading}>Parameters used to compute this solution</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-                <PresentationPairs presentation={parametersPresentation} record={descriptor} />
-            </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <ExpansionPanel>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.heading}>Scoring Values</Typography>
-                <Typography className={classes.secondaryHeading}></Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-                <PresentationPairs presentation={visualSolutionPresentation} record={solution} />
-            </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <ExpansionPanel expanded={true}>
-            <ExpansionPanelSummary>
-                <Typography className={classes.heading}>Solution Alignment</Typography>
-                <Typography className={classes.secondaryHeading}></Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-                <SolutionAlignment hueLevel={hueLevel} solution={solution} />
-            </ExpansionPanelDetails>
-        </ExpansionPanel>
-    </div>
+const Solution = ({ classes, descriptor, solution }) => {
+    const [colored, setColored] = useState(true);
+    return (
+        <div className={classes.root}>
+            <ExpansionPanel>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography className={classes.heading}>Parameters</Typography>
+                    <Typography className={classes.secondaryHeading}>Parameters used to compute this solution</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <PresentationPairs presentation={parametersPresentation} record={descriptor} />
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+            <ExpansionPanel>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography className={classes.heading}>Scoring Values</Typography>
+                    <Typography className={classes.secondaryHeading}></Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <PresentationPairs presentation={visualSolutionPresentation} record={solution} />
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+            <ExpansionPanel expanded={true}>
+                <ExpansionPanelSummary>
+                    <Typography className={classes.heading}>
+                    Solution Alignment
+                    <Switch
+                        checked={colored}
+                        onChange={e => setColored(e.target.checked)}
+                        color="primary"
+                    />
+                    </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <SolutionAlignment colored={colored} hueLevel={hueLevel} solution={solution} />
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+        </div>
+    );
+}
 
 Solution.propTypes = {
     classes: PropTypes.object.isRequired,

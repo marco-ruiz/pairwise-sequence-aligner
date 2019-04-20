@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Header from './Header';
 import DescriptorForm from './DescriptorForm';
@@ -22,59 +22,45 @@ const styles = {
 
 const presentations = solutionPresentations(value => value + "%");
 
-export default class AppPage extends React.Component {
+export default ({ matrixes, alignUrl }) => {
+    const [descriptor, setDescriptor] = useState({
+        sequenceA: 'TNAKTAKVCQSFAWNEENTQKAVSMYQQLINENGLDFANSDGLKEIAKAVGAASPVSVRSKLTS',
+        sequenceB: 'STVSPVFVCQSFAKNAGMYGERVGAVGAASPVSCFHLALTKQAQNKTIKPAVTSQLAKIIRSEVSNPPA',
+        alignmentType: 'LOCAL',
+        scoringMatrixName: 'BLOSUM100',
+        fixGapPenalty: 5,
+        varGapPenalty: 1,
+        minScore: 20,
+        maxNumberOfSolutions: 15,
+    });
+    const [solutions, setSolutions] = useState(undefined);
 
-    constructor(props) {
-        super(props);
-    
-        this.state = {
-            descriptor: {
-                sequenceA: 'TNAKTAKVCQSFAWNEENTQKAVSMYQQLINENGLDFANSDGLKEIAKAVGAASPVSVRSKLTS',
-                sequenceB: 'STVSPVFVCQSFAKNAGMYGERVGAVGAASPVSCFHLALTKQAQNKTIKPAVTSQLAKIIRSEVSNPPA',
-                alignmentType: 'LOCAL',
-                scoringMatrixName: 'BLOSUM100',
-                fixGapPenalty: 5,
-                varGapPenalty: 1,
-                minScore: 20,
-                maxNumberOfSolutions: 15,
-            },
-            matrixes: this.props.matrixes,
-            solutions: []
-        };
-    }
-    
-    onRestart = () => {
-        this.setState(() => ({ solutions: [] }));
+    const processApiResponse = ({ descriptor, solutions }) => {
+        setDescriptor(descriptor);
+        setSolutions(solutions);
     }
 
-    processApiResponse = ({ descriptor, solutions}) => { 
-        this.setState(() => ({ descriptor, solutions }));
-    }
-
-    render() {
-        const definitionMode = (!this.state.solutions || !this.state.solutions.length);
-        return definitionMode ? 
-            <Fragment>
-                <Header title="Pairwise Sequence Aligner" />
-                <div style={styles.PaperContainer}>
-                    <Paper style={styles.Paper}>
-                        <DescriptorForm
-                            descriptor={this.state.descriptor}
-                            matrixes={this.state.matrixes}
-                            onSubmit={body => apiRequestPost(this.props.alignUrl, body, this.processApiResponse)}
-                        />
-                    </Paper>
-                </div>
-            </Fragment>
-            :
-            <ItemsDashboard
-                title="Pairwise Sequence Aligner" 
-                presentations={presentations}
-                listItems={this.state.solutions}
-                onRestart={this.onRestart}
-                detailsFactory={item => 
-                    <Solution descriptor={this.state.descriptor} solution={item} />
-                }
-            />
-    };
+    return (!solutions || !solutions.length) ?
+        <Fragment>
+            <Header title="Pairwise Sequence Aligner" />
+            <div style={styles.PaperContainer}>
+                <Paper style={styles.Paper}>
+                    <DescriptorForm
+                        descriptor={descriptor}
+                        matrixes={matrixes}
+                        onSubmit={body => apiRequestPost(alignUrl, body, processApiResponse)}
+                    />
+                </Paper>
+            </div>
+        </Fragment>
+        :
+        <ItemsDashboard
+            title="Pairwise Sequence Aligner"
+            presentations={presentations}
+            listItems={solutions}
+            onRestart={() => setSolutions()}
+            detailsFactory={item =>
+                <Solution descriptor={descriptor} solution={item} />
+            }
+        />
 }

@@ -36,7 +36,7 @@ const createRGBA = (hueLevel, level) => {
     return 'rgba(' + rgb + ', ' + alpha + ')';
 }
 
-const SolutionAlignment = ({ classes, hueLevel, solution: { alignedSequences } }) => {
+const SolutionAlignment = ({ classes, colored, hueLevel, solution: { alignedSequences } }) => {
         const sequences = ['formattedAlignedA', 'formattedAlignment', 'formattedAlignedB'].map(key => alignedSequences[key]);
         const levels = createAffixedArray(alignedSequences.scoreContributionLevels, 0, alignedSequences.affixLength);
         const rgbas = levels.map(level => createRGBA(hueLevel, level));
@@ -48,6 +48,7 @@ const SolutionAlignment = ({ classes, hueLevel, solution: { alignedSequences } }
                     {levels.map((level, index) =>
                         <TableCell key={index} className={classes.tableCell}>
                             <ColoredBar
+                                colored={colored}
                                 size={150}
                                 minValue={-1}
                                 maxValue={1}
@@ -60,7 +61,7 @@ const SolutionAlignment = ({ classes, hueLevel, solution: { alignedSequences } }
                 {sequences.map((seq, seqIndex) =>
                     <TableRow key={seqIndex} className={classes.tableRow}>
                         {seq.split("").map((symbol, index) =>
-                            <TableCell key={index} className={classes.tableCell} style={{ backgroundColor: rgbas[index] }}>
+                            <TableCell key={index} className={classes.tableCell} style={{ backgroundColor: colored && rgbas[index] }}>
                                 {symbol}
                             </TableCell>
                         )}
