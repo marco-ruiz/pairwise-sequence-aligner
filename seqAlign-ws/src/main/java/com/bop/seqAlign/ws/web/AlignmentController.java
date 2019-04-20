@@ -42,7 +42,7 @@ import com.bop.seqAlign.ws.web.resource.ScoringMatrixesResource;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/api", produces = MediaTypes.HAL_JSON_VALUE)
-public class AlignmentController {	//extends BaseController {
+public class AlignmentController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AlignmentController.class);
 	

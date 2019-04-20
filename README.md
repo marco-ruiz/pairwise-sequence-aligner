@@ -1,4 +1,4 @@
-# Pairwise Sequence Aligner
+# Pairwise Sequence Aligner [![Build Status](https://travis-ci.org/marco-ruiz/seqAlign.svg?branch=master)](https://travis-ci.org/marco-ruiz/seqAlign)
 
 This project consists of:
 - An abstract framework to compute sequence alignments.
