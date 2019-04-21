@@ -1,0 +1,38 @@
+image: gradle:alpine
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+stages:
+  - build
+  - deploy
+
+before_script:
+  - echo `pwd`
+  - echo Starting CI $CI_PROJECT_NAME@$CI_COMMIT_SHORT_SHA...
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - rm -f  .gradle/caches/modules-2/modules-2.lock
+  - rm -fr .gradle/caches/*/plugin-resolution/
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+build:
+  stage: build
+  script:
+    - ./gradlew stage
+  artifacts:
+    paths:
+      - build/libs/*.jar
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  script:
+    - ./deploy
+
+after_script:
+- echo End CI $CI_PROJECT_NAME@$CI_COMMIT_SHORT_SHA
