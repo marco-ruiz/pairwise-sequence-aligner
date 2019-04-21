@@ -17,13 +17,13 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.palantir.docker'
 
 bootJar {
-	baseName = 'seqAlign-ws'
+	baseName = 'align-ws'
 	version = '0.0.1-SNAPSHOT'
 }
 
 dependencies {
-	compile project(':seqAlign-common')
-	runtimeOnly project(':seqAlign-js')
+	compile project(':align-common')
+	runtimeOnly project(':align-js')
 	
 	// Spring Boot
 	compile 'org.springframework.boot:spring-boot-starter-data-rest'

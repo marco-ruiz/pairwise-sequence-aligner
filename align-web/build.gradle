@@ -9,16 +9,16 @@ configurations {
 //configurations.default.extendsFrom(configurations.bootDependency)
 
 dependencies {
-	bootFatJar project(':seqAlign-ws')
-	bootDependency project(':seqAlign-js')
+	bootFatJar project(':align-ws')
+	bootDependency project(':align-js')
 }
 
 task packageWebApp(type: Jar) {
-	baseName 'seqAlign-web'
+	baseName 'align-web'
 	extension 'jar'
 	destinationDir file("${projectDir}/build_fatjar")
 
-//	from project(':seqAlign-js').projectDir {
+//	from project(':align-js').projectDir {
 	from configurations.bootDependency.singleFile {
 		include "build*/*.jar"
 		into 'BOOT-INF/lib'

@@ -22,7 +22,7 @@ allprojects {
     }
 }
 
-configure([project(':seqAlign-common'), project(':seqAlign-swing'), project(':seqAlign-ws')]) {
+configure([project(':align-common'), project(':align-swing'), project(':align-ws')]) {
 	apply plugin: 'java'
 	
 	sourceCompatibility = 1.8

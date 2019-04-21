@@ -1,8 +1,8 @@
 rootProject.name = 'pairwise-sequence-aligner'
 
-include 'seqAlign-common'
-include 'seqAlign-ws'
-include 'seqAlign-swing'
+include 'align-common'
+include 'align-ws'
+include 'align-swing'
 
-include 'seqAlign-js'
-//include 'seqAlign-web'
+include 'align-js'
+//include 'align-web'
