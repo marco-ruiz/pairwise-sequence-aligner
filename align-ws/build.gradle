@@ -10,8 +10,6 @@ plugins {
 	id "io.spring.dependency-management" version "1.0.5.RELEASE"
 }
 
-group = 'marcoruiz'
-
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.palantir.docker'
@@ -40,14 +38,14 @@ dependencies {
 	testCompile 'junit:junit'
 }
 
-task unpack(type: Copy) {
+task unpackBootJar(type: Copy) {
 	dependsOn bootJar
 	from(zipTree(tasks.bootJar.outputs.files.singleFile))
 	into("build/dependency")
 }
 
 docker {
-	name 'marcoruiz/pairwise-sequence-aligner-ws'
-	copySpec.from(tasks.unpack.outputs).into("dependency")
+	name "${bootJar.baseName}"
+	copySpec.from(tasks.unpackBootJar.outputs).into("dependency")
 	buildArgs(['DEPENDENCY': "dependency"])
 }
