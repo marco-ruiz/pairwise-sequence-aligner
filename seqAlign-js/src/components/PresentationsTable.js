@@ -72,14 +72,13 @@ export default StyledPresentationsTable;
 
 export const PresentationsColumn = (props) => {
     const { presentations, initialIndex } = props;
-    const [selectedIndex, offsetter] = useCarousel(presentations.length, initialIndex);
-    const [newPresentations] = useState(() =>
-        presentations.map((presentation, index) =>
-            presentation.clone({ caption: <CarouselCaption key={index} onMove={offsetter}>{presentation.caption}</CarouselCaption> })
-        )
-    );
+    const [ [firstPresentation], offsetter ] = useCarousel(presentations, initialIndex);
+    const singlePresentationArray = Array.of(firstPresentation.clone(
+        { caption: <CarouselCaption onMove={offsetter}>{firstPresentation.caption}</CarouselCaption> }
+    ));
+
     return (
-        <StyledPresentationsTable {...props} presentations={Array.of(newPresentations[selectedIndex])} />
+        <StyledPresentationsTable {...props} presentations={singlePresentationArray} />
     );
 }
 
