@@ -1,16 +1,17 @@
-image: gradle:alpine
+image: gradle:slim
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GIT_STRATEGY: clone
 
 stages:
   - build
-  - deploy
 
 before_script:
   - echo `pwd`
   - echo Starting CI $CI_PROJECT_NAME@$CI_COMMIT_SHORT_SHA...
   - export GRADLE_USER_HOME=`pwd`/.gradle
+  - export PATH=`pwd`/.gradle/nodejs/node-v10.14.1-linux-x64/bin:$PATH
   - rm -f  .gradle/caches/modules-2/modules-2.lock
   - rm -fr .gradle/caches/*/plugin-resolution/
 
@@ -22,17 +23,15 @@ cache:
 build:
   stage: build
   script:
-    - ./gradlew stage
+    - ./gradlew --full-stacktrace stage 
   artifacts:
     paths:
       - build/libs/*.jar
   only:
     - master
-
-deploy:
-  stage: deploy
-  script:
-    - ./deploy
-
-after_script:
-- echo End CI $CI_PROJECT_NAME@$CI_COMMIT_SHORT_SHA
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
