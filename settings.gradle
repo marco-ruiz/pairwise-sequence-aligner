@@ -1,4 +1,4 @@
-rootProject.name = 'seqAlign'
+rootProject.name = 'pairwise-sequence-aligner'
 
 include 'seqAlign-common'
 include 'seqAlign-ws'
