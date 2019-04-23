@@ -1,11 +1,16 @@
-image: gradle:slim
+image: docker:latest
+services:
+  - docker:dind
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   GIT_STRATEGY: clone
-
+  DOCKER_DRIVER: overlay
+  
 stages:
   - build
+  - package
+  - deploy
 
 before_script:
   - echo `pwd`
@@ -20,13 +25,11 @@ cache:
     - .gradle/wrapper
     - .gradle/caches
 
-build:
+build-gradle:
+  image: gradle:slim
   stage: build
   script:
-    - ./gradlew --full-stacktrace stage 
-  artifacts:
-    paths:
-      - build/libs/*.jar
+    - ./gradlew --full-stacktrace stage
   only:
     - master
   cache:
@@ -35,3 +38,25 @@ build:
     paths:
       - build
       - .gradle
+
+build-docker:
+  image: gradle:slim
+  stage: build
+  script:
+    - ./gradlew --full-stacktrace unpackBootJar
+  only:
+    - master
+  artifacts:
+    paths:
+      - align-ws/build/
+
+deploy-docker-hub:
+  stage: deploy
+  script:
+    - cd align-ws
+    - echo $DH_REGISTRY_PASSWORD | docker login $DH_REGISTRY -u $DH_REGISTRY_USER --password-stdin
+    - docker build -t "$DH_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$DH_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  only:
+    - master
+    

@@ -28,6 +28,12 @@ configure([project(':align-common'), project(':align-swing'), project(':align-ws
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 	build.mustRunAfter clean
+	
+	dependencies {
+		testImplementation 'junit:junit:4.12'
+		testCompile "org.hamcrest:hamcrest-core:1.3"
+		testCompile "org.hamcrest:hamcrest-library:1.3"
+	}
 }
 
 subprojects {

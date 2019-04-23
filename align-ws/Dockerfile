@@ -1,8 +1,9 @@
 FROM openjdk:8-jdk-alpine
+MAINTAINER Marco Ruiz
 
-RUN apk add --no-cache tzdata
-ENV TZ=America/Los_Angeles
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+#RUN apk add --no-cache tzdata
+#ENV TZ=America/Los_Angeles
+#RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 VOLUME /tmp
 ARG DEPENDENCY=build/dependency

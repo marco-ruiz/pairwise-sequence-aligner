@@ -33,9 +33,6 @@ dependencies {
 //	compile 'javax.inject:javax.inject:1'
 
 	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8'
-
-	// Testing
-	testCompile 'junit:junit'
 }
 
 task unpackBootJar(type: Copy) {
@@ -45,6 +42,7 @@ task unpackBootJar(type: Copy) {
 }
 
 docker {
+	dependsOn unpackBootJar
 	name "${bootJar.baseName}"
 	copySpec.from(tasks.unpackBootJar.outputs).into("dependency")
 	buildArgs(['DEPENDENCY': "dependency"])
