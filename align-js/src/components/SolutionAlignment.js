@@ -6,6 +6,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import ColoredBar from './ColoredBar';
+import RgbaColor from '../rgba-color';
 
 const styles = {
     table: {
@@ -30,16 +31,10 @@ const createAffixedArray = (sourceArray, affixValue, affixSize) => {
     return affixValues.concat(sourceArray, affixValues)
 }
 
-const createRGBA = (hueLevel, level) => {
-    const alpha = Math.abs(level * 0.5);
-    const rgb = (level > 0) ? hueLevel + ", 0, 0" : "0, 0, " + hueLevel;
-    return 'rgba(' + rgb + ', ' + alpha + ')';
-}
-
-const SolutionAlignment = ({ classes, colored, hueLevel, solution: { alignedSequences } }) => {
+const SolutionAlignment = ({ classes, colored, positiveColor, negativeColor, solution: { alignedSequences } }) => {
     const sequences = ['formattedAlignedA', 'formattedAlignment', 'formattedAlignedB'].map(key => alignedSequences[key]);
     const levels = createAffixedArray(alignedSequences.scoreContributionLevels, 0, alignedSequences.affixLength);
-    const rgbas = levels.map(level => createRGBA(hueLevel, level));
+    const rgbas = levels.map(level => (level > 0 ? positiveColor : negativeColor).factorAlphaBy(level, 0.5));
     const contributionBars = 
         <TableRow className={classes.tableRow}>
             {levels.map((level, index) =>
@@ -76,6 +71,8 @@ const SolutionAlignment = ({ classes, colored, hueLevel, solution: { alignedSequ
 
 SolutionAlignment.propTypes = {
     classes: PropTypes.object.isRequired,
+    positiveColor: PropTypes.instanceOf(RgbaColor),
+    negativeColor: PropTypes.instanceOf(RgbaColor),
 };
 
 export default withStyles(styles)(SolutionAlignment);

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import RgbaColor from '../rgba-color';
 
 const styles = {
     verticalContainer: {
@@ -11,15 +12,11 @@ const styles = {
 }
 
 export const PercentageBar = props =>
-    <StyleColoredBar
-        toValue={props.percentage}
-        color={`rgba(${props.hueLevel}, 0, 0, 0.5)`}
-        backgroundColor={`rgba(${props.hueLevel}, ${props.hueLevel}, ${props.hueLevel}, 0.5)`}
-        {...props} >
+    <StyleColoredBar toValue={props.percentage} {...props} >
         {props.percentage}%
     </StyleColoredBar>
 
-const barStylesGenerator = (propSize, valuesRangeSize, colors) => 
+const barStylesGenerator = (propSize, valuesRangeSize, colors) =>
     (...boundaries) => 
         colors.map((backgroundColor, index) => {
             const toValue = boundaries[index + 1];
@@ -33,7 +30,7 @@ const barStylesGenerator = (propSize, valuesRangeSize, colors) =>
 const ColoredBar = ({ classes, colored = true, children, horizontalBar, size, 
                         fromValue = 0, toValue = 0, 
                         minValue = 0, maxValue = 100, 
-                        color = '#f00', backgroundColor }) => {
+                        color = new RgbaColor(255, 0, 0), backgroundColor }) => {
 
     const valuesRangeSize = maxValue - minValue;
     const propSize = (horizontalBar) ? 'width' : 'height';
@@ -63,6 +60,8 @@ const ColoredBar = ({ classes, colored = true, children, horizontalBar, size,
 
 ColoredBar.propTypes = {
     classes: PropTypes.object.isRequired,
+    color: PropTypes.instanceOf(RgbaColor),
+    backgroundColor: PropTypes.instanceOf(RgbaColor),
 };
 
 const StyleColoredBar = withStyles(styles)(ColoredBar);

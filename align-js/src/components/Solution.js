@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
 import Typography from '@material-ui/core/Typography';
@@ -14,8 +13,7 @@ import PresentationPairs from './PresentationPairs';
 import SolutionAlignment from './SolutionAlignment';
 import { PercentageBar } from './ColoredBar';
 import PropertyPresentation from '../property-presentation';
-
-const hueLevel = 180;
+import RgbaColor from '../rgba-color';
 
 const styles = theme => ({
     root: {
@@ -66,7 +64,13 @@ export const solutionPresentations = (percentageValueFormatter) => [
 ];
 
 const visualSolutionPresentation = solutionPresentations(value => 
-    <PercentageBar percentage={value} hueLevel={hueLevel} horizontalBar size={200}/>
+    <PercentageBar 
+        horizontalBar
+        size={200}
+        percentage={value} 
+        color={new RgbaColor(0, 0, 180, 0.5)} 
+        backgroundColor={new RgbaColor(180, 180, 180, 0.5)} 
+    />
 );
 
 const Solution = ({ classes, descriptor, solution }) => {
@@ -103,7 +107,11 @@ const Solution = ({ classes, descriptor, solution }) => {
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <SolutionAlignment colored={colored} hueLevel={hueLevel} solution={solution} />
+                    <SolutionAlignment 
+                        colored={colored} 
+                        positiveColor={new RgbaColor(0, 200, 0)} 
+                        negativeColor={new RgbaColor(250, 0, 0)} 
+                        solution={solution} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </div>

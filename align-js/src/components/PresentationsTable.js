@@ -59,13 +59,6 @@ const PresentationsTable = ({ classes, presentations, listItems, showHeader, onS
     );
 }
 
-PresentationsTable.propTypes = {
-    classes: PropTypes.object.isRequired,
-    presentation: PropTypes.arrayOf(
-        PropTypes.instanceOf(PropertyPresentation)
-    ),
-};
-
 const StyledPresentationsTable = withStyles(styles)(PresentationsTable);
 
 export default StyledPresentationsTable;
@@ -73,17 +66,22 @@ export default StyledPresentationsTable;
 export const PresentationsColumn = (props) => {
     const { presentations, initialIndex } = props;
     const [ [firstPresentation], offsetter ] = useCarousel(presentations, initialIndex);
-    const singlePresentationArray = Array.of(firstPresentation.clone(
+    const firstPresentationClone = firstPresentation.clone(
         { caption: <CarouselCaption onMove={offsetter}>{firstPresentation.caption}</CarouselCaption> }
-    ));
+    );
 
     return (
-        <StyledPresentationsTable {...props} presentations={singlePresentationArray} />
+        <StyledPresentationsTable {...props} presentations={[firstPresentationClone]} />
     );
 }
 
-PresentationsColumn.propTypes = {
-    presentation: PropTypes.arrayOf(
-        PropTypes.instanceOf(PropertyPresentation)
-    ),
+const presentation = PropTypes.arrayOf(
+    PropTypes.instanceOf(PropertyPresentation)
+);
+
+PresentationsTable.propTypes = {
+    classes: PropTypes.object.isRequired,
+    presentation
 };
+
+PresentationsColumn.propTypes = { presentation };
