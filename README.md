@@ -17,6 +17,14 @@ This project consists of:
 ```
 ./gradlew bootRun
 ```
+
+- Alternatively you can launch the web server by issuing the following command that starts a docker container with the 
+[appropriate docker image](https://hub.docker.com/r/marcoruiz/align-ws):
+
+```
+docker run -p 8080:8080 marcoruiz/align-ws:master
+```
+
 - Point your browser to `http://localhost:8080/`
 - Enter the parameters of the alignment and press the `Align` button
 
