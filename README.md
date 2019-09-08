@@ -1,4 +1,4 @@
-# Pairwise Sequence Aligner [![Build Status](https://travis-ci.org/marco-ruiz/seqAlign.svg?branch=master)](https://travis-ci.org/marco-ruiz/seqAlign) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Pairwise Sequence Aligner [![Build Status](https://travis-ci.org/marco-ruiz/pairwise-sequence-aligner.svg?branch=master)](https://travis-ci.org/marco-ruiz/pairwise-sequence-aligner) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 This project consists of:
 - An abstract framework to compute sequence alignments.
