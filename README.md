@@ -43,6 +43,13 @@ docker run -p 8080:8080 marcoruiz/align-ws:master
 ./gradlew bootRun
 ```
 
+- Alternatively you can launch the web server by issuing the following command that starts a docker container with the 
+[appropriate docker image](https://hub.docker.com/r/marcoruiz/align-ws):
+
+```
+docker run -p 8080:8080 marcoruiz/align-ws:master
+```
+
 - Submit a `POST` web request to the running web service (by default `http://localhost:8080/api/align`) with a payload such as the following:
 
 ```
