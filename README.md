@@ -7,6 +7,8 @@ This project consists of:
 
 ## ReactJS Application
 
+![](README/pairwise.gif)
+
 - Web application built using Javascript, React and Material UI.
 - A hosted version can be found at: [https://pairwise-alignment.herokuapp.com/](https://pairwise-alignment.herokuapp.com/) 
 
